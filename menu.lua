@@ -111,7 +111,7 @@ end
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicao = {
+local configTransicaoJogo = {
 
 	effect = "fade", time = 500
 }
@@ -123,7 +123,7 @@ local configTransicao = {
 --------------------------------------------------------------------------------
 function comecarJogo( )
 
-	composer.gotoScene("jogo", configTransicao)
+	composer.gotoScene("jogo", configTransicaoJogo)
 end
 --------------------------------------------------------------------------------
 

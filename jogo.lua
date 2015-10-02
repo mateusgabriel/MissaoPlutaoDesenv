@@ -28,8 +28,6 @@ local pontosTxt
 local pontos = 0
 local pcp -- receber f decrementador de combustível e pontos
 local coc -- recebe a criação do objeto combustível
-local btComecarJogo
-local comecarJogo = {}
 local carregarImgsJogo = {}
 local carregarFoguete = {}
 local carregarCometas = {}
@@ -40,6 +38,7 @@ local adicionarPontos = {}
 local ativarFoguete = {}
 local controlarFoguete = {}
 local criarGrupos = {}
+local gameOver = {}
 local perderCP = {}
 local ganharCP = {}
 local scrollEstrelas = {}
@@ -71,6 +70,10 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
+  local cenaAnterior = composer.getSceneName( "previous" )
+  composer.removeScene( cenaAnterior )
+  composer.removeScene( "menu")
+
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
@@ -99,8 +102,8 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
-    btComecarJogo:removeEventListener("tap", comecarJogo)
-    -- Chama quando a cena está na cena
+    Runtime:removeEventListener('collision', onLocalCollision)
+    -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
@@ -336,7 +339,7 @@ end
 -- Realiza cálculo de decremento de combustível e de pontos de acordo com a distância percorrida
 --------------------------------------------------------------------------------
   function perderCP ()
-    combustivel = combustivel - 50
+    combustivel = combustivel - 100
   end
 --------------------------------------------------------------------------------
 
@@ -373,9 +376,8 @@ end
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicao = {
-
-	effect = "fade", time = 500
+local configTransicaoGameOver = {
+	effect = "fade", time = 1000
 }
 --------------------------------------------------------------------------------
 
@@ -383,10 +385,16 @@ local configTransicao = {
 --------------------------------------------------------------------------------
 -- Função que chama cena para início do jogo
 --------------------------------------------------------------------------------
-function comecarJogo( )
-
-	composer.gotoScene("jogo", configTransicao)
+function gameOver(  )
+  --audio.stop( 1 )
+  display.remove( foguete )
+  display.remove( cometa )
+  transition.cancel( cometa )
+  display.remove( combustivel )
+  transition.cancel( combustivel )
+  composer.gotoScene( "gameOver", configTransicaoGameOver )
 end
+
 --------------------------------------------------------------------------------
 
 
