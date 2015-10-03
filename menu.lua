@@ -101,8 +101,8 @@ function carregarImgsMenu( )
   scene.view:insert(background)
 
   btComecarJogo = display.newText("Clique para iniciar", 0, 0)
-  btComecarJogo.x = 320
-  btComecarJogo.y = 420
+  btComecarJogo.x = display.contentWidth / 2
+  btComecarJogo.y = display.contentHeight / 2
   scene.view:insert(btComecarJogo)
 end
 --------------------------------------------------------------------------------

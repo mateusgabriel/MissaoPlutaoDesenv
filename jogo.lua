@@ -4,6 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -17,17 +18,17 @@ local speed = 8000
 local speedEstrelas = 2
 local cac -- recebe a criação(carregar) de cometas
 local add -- recebe o incrementador(adicionar) da distância
-local distanciaTxt
-local distancia = 0
-local distanciaAux = 500
-local adc -- recebe o incrementador(adicionar) do combustível
-local combustivelTxt
-local combustivel = 1000
-local adp -- recebe o incrementador(adicionar) de pontos
-local pontosTxt
-local pontos = 0
 local pcp -- receber f decrementador de combustível e pontos
 local coc -- recebe a criação do objeto combustível
+local adp -- recebe o incrementador(adicionar) de pontos
+local adc -- recebe o incrementador(adicionar) do combustível
+local distanciaTxt
+--local distancia = 0
+--local distanciaAux = 250
+local combustivelTxt
+--local combustivel = 1000
+local pontosTxt
+--local pontos = 0
 local carregarImgsJogo = {}
 local carregarFoguete = {}
 local carregarCometas = {}
@@ -70,10 +71,6 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
-  local cenaAnterior = composer.getSceneName( "previous" )
-  composer.removeScene( cenaAnterior )
-  composer.removeScene( "menu")
-
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
@@ -83,8 +80,8 @@ function scene:show(event)
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
-    Runtime:addEventListener("touch", controlarFoguete)
-    Runtime:addEventListener("collision", onLocalCollision)
+    Runtime:addEventListener('touch', controlarFoguete)
+    Runtime:addEventListener('collision', onLocalCollision)
     Runtime:addEventListener('enterFrame', scrollEstrelas)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
@@ -102,7 +99,6 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
-    Runtime:removeEventListener('collision', onLocalCollision)
     -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
@@ -119,9 +115,11 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-    -- Chamado antes da remoção de vista da cena ("sceneGroup")
-    -- Código para "limpar" a cena
-    -- ex: remover obejtos display, save state, cancelar transições e etc
+  composer.removeScene( "jogo" )
+  display.remove(foguete)
+  -- Chamado antes da remoção de vista da cena ("sceneGroup")
+  -- Código para "limpar" a cena
+  -- ex: remover obejtos display, save state, cancelar transições e etc
 end
 --------------------------------------------------------------------------------
 
@@ -307,10 +305,13 @@ function onLocalCollision(event)
         ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
 		    event.object1:removeSelf()
+        gameOver()
     elseif (event.object2.name == "foguete" and event.object1.name == "teto") then
 		    event.object2:removeSelf()
+        gameOver()
     elseif (event.object2.name == "foguete" and event.object1.name == "chao") then
 		    event.object2:removeSelf()
+        gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
       event.object2:removeSelf()
@@ -350,7 +351,7 @@ end
 function perderCombustivelPontosPorDistancia()
   if (distancia == distanciaAux) then
     perderCP()
-    distanciaAux = distanciaAux + 500
+    distanciaAux = distanciaAux + 250
   end
 end
 --------------------------------------------------------------------------------
@@ -386,12 +387,6 @@ local configTransicaoGameOver = {
 -- Função que chama cena para início do jogo
 --------------------------------------------------------------------------------
 function gameOver(  )
-  --audio.stop( 1 )
-  display.remove( foguete )
-  display.remove( cometa )
-  transition.cancel( cometa )
-  display.remove( combustivel )
-  transition.cancel( combustivel )
   composer.gotoScene( "gameOver", configTransicaoGameOver )
 end
 

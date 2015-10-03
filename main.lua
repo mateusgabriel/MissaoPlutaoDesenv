@@ -8,10 +8,10 @@ composer.gotoScene("menu")
 --------------------------------------------------------------------------------
 -- Variáveis globais
 --------------------------------------------------------------------------------
---Variaveis
---local distancia = 0
---local combustivel = 10000
---local pontos = 10
+distancia = 0
+distanciaAux = 250
+combustivel = 1000
+pontos = 0
 _W = display.contentWidth
 _H = display.contentHeight
 _W2 = display.contentCenterX
