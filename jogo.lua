@@ -23,12 +23,8 @@ local coc -- recebe a criação do objeto combustível
 local adp -- recebe o incrementador(adicionar) de pontos
 local adc -- recebe o incrementador(adicionar) do combustível
 local distanciaTxt
---local distancia = 0
---local distanciaAux = 250
 local combustivelTxt
---local combustivel = 1000
 local pontosTxt
---local pontos = 0
 local carregarImgsJogo = {}
 local carregarFoguete = {}
 local carregarCometas = {}
@@ -36,7 +32,8 @@ local carregarObjCombustivel = {}
 local adicionarDistancia = {}
 local adicionarCombustivel = {}
 local adicionarPontos = {}
-local ativarFoguete = {}
+local adicionarDisplayDCP = {}
+--local ativarFoguete = {}
 local controlarFoguete = {}
 local criarGrupos = {}
 local gameOver = {}
@@ -56,9 +53,7 @@ function scene:create(event)
   carregarImgsJogo()
   carregarFoguete()
   criarGrupos()
-  adicionarDistancia()
-  adicionarCombustivel()
-  adicionarPontos()
+  adicionarDisplayDCP()
 
 end
 --------------------------------------------------------------------------------
@@ -71,6 +66,8 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
+  composer.removeScene("gameOver")
+
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
@@ -80,9 +77,9 @@ function scene:show(event)
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
-    Runtime:addEventListener('touch', controlarFoguete)
-    Runtime:addEventListener('collision', onLocalCollision)
-    Runtime:addEventListener('enterFrame', scrollEstrelas)
+    Runtime:addEventListener("touch", controlarFoguete)
+    Runtime:addEventListener("collision", onLocalCollision)
+    Runtime:addEventListener("enterFrame", scrollEstrelas)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -103,6 +100,7 @@ function scene:hide(event)
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
+    gameOver()
     -- Chama imediatamente quando a cena está fora da tela
   end
 end
@@ -115,8 +113,23 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-  composer.removeScene( "jogo" )
+  display.remove(teto1)
+  display.remove(teto2)
+  display.remove(teto3)
   display.remove(foguete)
+  timer.cancel(coc)
+  coc = nil
+  timer.cancel(cac)
+  cac = nil
+  timer.cancel(add)
+  add = nil
+  timer.cancel(adc)
+  adc = nil
+  timer.cancel(adp)
+  adp = nil
+  timer.cancel(pcp)
+  pcp = nil
+  --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -128,9 +141,9 @@ end
 -- Cria grupo(s) para unir elementos da tela
 --------------------------------------------------------------------------------
 function criarGrupos( )
-  grupoFoguete = display.newGroup( )
+  --grupoFoguete = display.newGroup( )
   grupoCombComet = display.newGroup( )
-  scene.view:insert(grupoFoguete)
+  --scene.view:insert(grupoFoguete)
   scene.view:insert(grupoCombComet)
 end
 --------------------------------------------------------------------------------
@@ -236,13 +249,24 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Adicionar display DCP(Distância, Combustível, Pontos)
+--------------------------------------------------------------------------------
+function adicionarDisplayDCP()
+  distanciaTxt = display.newText("Distância 0 km", _W2 - 213, 620, native.systemFontBold, 20)
+  scene.view:insert(distanciaTxt)
+  combustivelTxt = display.newText("Combustível 0 mil/l", _W2 + 10, 620, native.systemFontBold, 20)
+  scene.view:insert(combustivelTxt)
+  pontosTxt = display.newText("0 Pontos", _W2 - (-190), 620, native.systemFontBold, 20)
+  scene.view:insert(pontosTxt)
+end
+
+
+--------------------------------------------------------------------------------
 -- Adicionar distância percorrida
 --------------------------------------------------------------------------------
-distanciaTxt = display.newText("Distância 0 km", _W2 - 213, 620, native.systemFontBold, 20)
 function adicionarDistancia()
     distancia = distancia + 50
     distanciaTxt.text = string.format("Distância %d km", distancia)
-    scene.view:insert(distanciaTxt)
 end
 --------------------------------------------------------------------------------
 
@@ -250,10 +274,8 @@ end
 --------------------------------------------------------------------------------
 -- Adicionar combustível
 --------------------------------------------------------------------------------
-combustivelTxt = display.newText("Combustível 0 mil/l", _W2 + 10, 620, native.systemFontBold, 20)
 function adicionarCombustivel()
   combustivelTxt.text = string.format("Combustível %d mil/l", combustivel)
-  scene.view:insert(combustivelTxt)
 end
 --------------------------------------------------------------------------------
 
@@ -261,10 +283,8 @@ end
 --------------------------------------------------------------------------------
 -- Adicionar pontos
 --------------------------------------------------------------------------------
-pontosTxt = display.newText("0 Pontos", _W2 - (-190), 620, native.systemFontBold, 20)
 function adicionarPontos()
   pontosTxt.text = string.format("%d Pontos", pontos)
-  scene.view:insert(pontosTxt)
 end
 --------------------------------------------------------------------------------
 
@@ -274,6 +294,7 @@ end
 --------------------------------------------------------------------------------
 function ativarFoguete(self, event)
   self:applyForce(0, -2, self.x, self.y)
+  --scene.view:insert(self)
 end
 --------------------------------------------------------------------------------
 
@@ -386,8 +407,9 @@ local configTransicaoGameOver = {
 --------------------------------------------------------------------------------
 -- Função que chama cena para início do jogo
 --------------------------------------------------------------------------------
-function gameOver(  )
-  composer.gotoScene( "gameOver", configTransicaoGameOver )
+function gameOver()
+  composer.removeScene("jogo")
+  composer.gotoScene("gameOver", configTransicaoGameOver)
 end
 
 --------------------------------------------------------------------------------

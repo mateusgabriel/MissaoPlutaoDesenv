@@ -48,10 +48,12 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
+  composer.removeScene("jogo")
+
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    btRetornarJogo:addEventListener("tap", retornarJogo)
+    btRetornarJogo:addEventListener("touch", retornarJogo)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -72,6 +74,7 @@ function scene:hide(event)
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
+    btRetornarJogo:addEventListener("touch", retornarJogo)
     -- Chama imediatamente quando a cena está fora da tela
   end
 end
@@ -83,8 +86,8 @@ end
 --------------------------------------------------------------------------------
 function scene:destroy(event)
   local sceneGroup = self.view
-  btRetornarJogo:removeEventListener("tap", retornarJogo)
-  retornarJogo()
+  --composer.removeScene("gameOver")
+  --btRetornarJogo:removeEventListener("tap", retornarJogo)
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -139,6 +142,7 @@ local configTransicaoJogo = {
 -- Função que chama cena para retorno ao jogo
 --------------------------------------------------------------------------------
 function retornarJogo( )
+  composer.removeScene("gameOver")
 	composer.gotoScene("jogo", configTransicaoJogo)
   distancia = 0
   distanciaAux = 250
