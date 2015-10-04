@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene( )
 local physics = require("physics")
--- physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -12,7 +12,9 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local gameOverTxt
 local btRetornarJogo
+local btRetornarMenu
 local distanciaPercorridaTxt
 local combustivelConsumidoTxt
 local pontosGanhosTxt
@@ -23,6 +25,7 @@ local calcularResultadoFinal = {}
 local carregarImgsGameOver = {}
 local criarGrupos = {}
 local retornarJogo = {}
+local retornarMenu = {}
 --------------------------------------------------------------------------------
 
 
@@ -34,8 +37,9 @@ function scene:create(event)
   local sceneGroup = self.view
   carregarImgsGameOver()
   calcularResultadoFinal()
+  criarGrupos()
 
-  resultadoFinalTxt = display.newText('' .. resultadoFinal, _W2 - 25, _H2 + 90, native.systemFontBold, 20)
+  resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 160, native.systemFontBold, 20)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -54,6 +58,7 @@ function scene:show(event)
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
     btRetornarJogo:addEventListener("touch", retornarJogo)
+    btRetornarMenu:addEventListener("touch", retornarMenu)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -86,11 +91,24 @@ end
 --------------------------------------------------------------------------------
 function scene:destroy(event)
   local sceneGroup = self.view
-  --composer.removeScene("gameOver")
-  --btRetornarJogo:removeEventListener("tap", retornarJogo)
+
+  display.remove(background)
+  --display.remove(gameOverTxt)
+  
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Cria grupo(s) para unir elementos da tela
+--------------------------------------------------------------------------------
+function criarGrupos( )
+  grupoGameOver = display.newGroup( )
+  --scene.view:insert(grupoFoguete)
+  scene.view:insert(grupoGameOver)
 end
 --------------------------------------------------------------------------------
 
@@ -104,18 +122,22 @@ function carregarImgsGameOver( )
   background.y = display.contentHeight / 2
   scene.view:insert(background)
 
-  btRetornarJogo = display.newText("Clique para retornar", 0, 0)
-  btRetornarJogo.x = _W2
-  btRetornarJogo.y = _H2
+  gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  scene.view:insert(gameOverTxt)
+
+  btRetornarJogo = display.newText("Retornar ao jogo", display.contentCenterX, display.contentCenterY)
   scene.view:insert(btRetornarJogo)
 
-  combustivelConsumidoTxt = display.newText('' .. combustivel, _W2 - 25, _H2 + 30, native.systemFontBold, 20)
+  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX, display.contentCenterY + 50)
+  scene.view:insert(btRetornarMenu)
+
+  combustivelConsumidoTxt = display.newText('' .. combustivel, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('' .. distancia, _W2 - 25, _H2 + 50, native.systemFontBold, 20)
+  distanciaPercorridaTxt = display.newText('' .. distancia, display.contentCenterX, display.contentCenterY + 120, native.systemFontBold, 20)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('' .. pontos, _W2 - 25, _H2 + 70, native.systemFontBold, 20)
+  pontosGanhosTxt = display.newText('' .. pontos, display.contentCenterX, display.contentCenterY + 140, native.systemFontBold, 20)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------
@@ -132,7 +154,7 @@ end
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicaoJogo = {
+local configTransicaoJogoMenu = {
 	effect = "fade", time = 500
 }
 --------------------------------------------------------------------------------
@@ -143,7 +165,21 @@ local configTransicaoJogo = {
 --------------------------------------------------------------------------------
 function retornarJogo( )
   composer.removeScene("gameOver")
-	composer.gotoScene("jogo", configTransicaoJogo)
+	composer.gotoScene("jogo", configTransicaoJogoMenu)
+  distancia = 0
+  distanciaAux = 250
+  combustivel = 1000
+  pontos = 0
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Função que chama cena para retorno ao jogo
+--------------------------------------------------------------------------------
+function retornarMenu( )
+  composer.removeScene("gameOver")
+	composer.gotoScene("menu", configTransicaoJogoMenu)
   distancia = 0
   distanciaAux = 250
   combustivel = 1000

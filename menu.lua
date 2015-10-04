@@ -10,8 +10,11 @@ local scene = composer.newScene()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local menuTxt
 local btComecarJogo
+local btCreditos
 local comecarJogo = {}
+local creditos = {}
 local carregarImgMenu = {}
 local criarGrupos = {}
 --------------------------------------------------------------------------------
@@ -37,10 +40,14 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
+  composer.removeScene("jogo")
+  composer.removeScene("creditos")
+
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    btComecarJogo:addEventListener("tap", comecarJogo)
+    btComecarJogo:addEventListener("touch", comecarJogo)
+    btCreditos:addEventListener("touch", creditos)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -57,7 +64,6 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
-    btComecarJogo:removeEventListener("tap", comecarJogo)
     -- Chama quando a cena está na cena
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
@@ -74,9 +80,12 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-    -- Chamado antes da remoção de vista da cena ("sceneGroup")
-    -- Código para "limpar" a cena
-    -- ex: remover obejtos display, save state, cancelar transições e etc
+  display.remove(background)
+  --display.remove(menuTxt)
+  
+  -- Chamado antes da remoção de vista da cena ("sceneGroup")
+  -- Código para "limpar" a cena
+  -- ex: remover obejtos display, save state, cancelar transições e etc
 end
 --------------------------------------------------------------------------------
 
@@ -100,10 +109,14 @@ function carregarImgsMenu( )
   background.y = display.contentHeight / 2
   scene.view:insert(background)
 
-  btComecarJogo = display.newText("Clique para iniciar", 0, 0)
-  btComecarJogo.x = display.contentWidth / 2
-  btComecarJogo.y = display.contentHeight / 2
+  menuTxt = display.newText("Menu", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  scene.view:insert(menuTxt)
+
+  btComecarJogo = display.newText("Jogo", display.contentCenterX, display.contentCenterY)
   scene.view:insert(btComecarJogo)
+
+  btCreditos = display.newText("Créditos", display.contentCenterX, display.contentCenterY + 50)
+  scene.view:insert(btCreditos)
 end
 --------------------------------------------------------------------------------
 
@@ -117,13 +130,31 @@ local configTransicaoJogo = {
 }
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+-- Configuração de transição entre cenas
+--------------------------------------------------------------------------------
+local configTransicaoCreditos = {
+
+	effect = "fade", time = 550
+}
+--------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 -- Função que chama cena para início do jogo
 --------------------------------------------------------------------------------
 function comecarJogo( )
-
+  composer.removeScene("menu")
 	composer.gotoScene("jogo", configTransicaoJogo)
+end
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Função que chama cena de créditos do jogo
+--------------------------------------------------------------------------------
+function creditos( )
+  composer.removeScene("menu")
+	composer.gotoScene("creditos", configTransicaoCreditos)
 end
 --------------------------------------------------------------------------------
 

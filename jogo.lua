@@ -12,8 +12,6 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
-local up = false
-local impulse = - 60
 local grupoCombComet
 local grupoFoguete
 local speed = 8000
@@ -54,8 +52,8 @@ function scene:create(event)
   local sceneGroup = self.view
   carregarImgsJogo()
   carregarFoguete()
-  criarGrupos()
   adicionarDisplayDCP()
+  criarGrupos()
 
 end
 --------------------------------------------------------------------------------
@@ -98,7 +96,7 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
-    background:addEventListener("touch", controlarFoguete)
+    --background:addEventListener("touch", controlarFoguete)
     -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
@@ -116,6 +114,9 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  Runtime:removeEventListener("collision", onLocalCollision)
+  Runtime:removeEventListener("enterFrame", scrollEstrelas)
+  display.remove(grupoCombComet)
   display.remove(teto1)
   display.remove(teto2)
   display.remove(teto3)
@@ -309,16 +310,8 @@ end
 --------------------------------------------------------------------------------
 -- Ativa o foguete ao clique aplicando força física
 --------------------------------------------------------------------------------
-function ativarFoguete(self, event)
-  self:applyForce(0, -1.5, self.x, self.y)
-  --scene.view:insert(self)
-end
-function update(event)
-  -- Move o avião para cima
-  if(up) then
-    impulse = impulse - 3
-    foguete:setLinearVelocity(0, impulse)
-  end
+local function ativarFoguete(self, event)
+  self:applyForce(0, -2, self.x, self.y)
 end
 --------------------------------------------------------------------------------
 
@@ -349,13 +342,22 @@ function onLocalCollision(event)
 		    event.object2:removeSelf()
         ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
-		    --event.object1:removeSelf()
+		    event.object1:removeSelf()
         gameOver()
-    elseif (event.object2.name == "foguete" and event.object1.name == "teto") then
-		    --event.object2:removeSelf()
+    elseif (event.object1.name == "cometa" and event.object2.name == "foguete") then
+        event.object2:removeSelf()
         gameOver()
-    elseif (event.object2.name == "foguete" and event.object1.name == "chao") then
-		    --event.object2:removeSelf()
+    elseif (event.object1.name == "foguete" and event.object2.name == "teto") then
+		    event.object1:removeSelf()
+        gameOver()
+    elseif (event.object1.name == "teto" and event.object2.name == "foguete") then
+        event.object2:removeSelf()
+        gameOver()
+    elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
+		    event.object1:removeSelf()
+        gameOver()
+    elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
+		    event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
