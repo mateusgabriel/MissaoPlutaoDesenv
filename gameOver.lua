@@ -74,7 +74,7 @@ function scene:hide(event)
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
-    btRetornarJogo:addEventListener("touch", retornarJogo)
+    --gameOver()
     -- Chama imediatamente quando a cena está fora da tela
   end
 end

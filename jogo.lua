@@ -12,6 +12,8 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local up = false
+local impulse = - 60
 local grupoCombComet
 local grupoFoguete
 local speed = 8000
@@ -33,7 +35,7 @@ local adicionarDistancia = {}
 local adicionarCombustivel = {}
 local adicionarPontos = {}
 local adicionarDisplayDCP = {}
---local ativarFoguete = {}
+local ativarFoguete = {}
 local controlarFoguete = {}
 local criarGrupos = {}
 local gameOver = {}
@@ -77,7 +79,7 @@ function scene:show(event)
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
-    Runtime:addEventListener("touch", controlarFoguete)
+    background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
     -- Chama quando a cena está na tela
@@ -96,11 +98,12 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
+    background:addEventListener("touch", controlarFoguete)
     -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
-    gameOver()
+    --gameOver()
     -- Chama imediatamente quando a cena está fora da tela
   end
 end
@@ -117,18 +120,32 @@ function scene:destroy(event)
   display.remove(teto2)
   display.remove(teto3)
   display.remove(foguete)
-  timer.cancel(coc)
-  coc = nil
-  timer.cancel(cac)
-  cac = nil
-  timer.cancel(add)
-  add = nil
-  timer.cancel(adc)
-  adc = nil
-  timer.cancel(adp)
-  adp = nil
-  timer.cancel(pcp)
-  pcp = nil
+  display.remove(chao)
+  display.remove(background)
+  if (coc) then
+    timer.cancel(coc)
+    coc = nil
+  end
+  if (cac) then
+    timer.cancel(cac)
+    cac = nil
+  end
+  if (add) then
+    timer.cancel(add)
+    add = nil
+  end
+  if (adc) then
+    timer.cancel(adc)
+    adc = nil
+  end
+  if (adp) then
+    timer.cancel(adp)
+    adp = nil
+  end
+  if (pcp) then
+    timer.cancel(pcp)
+    pcp = nil
+  end
   --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
@@ -293,8 +310,15 @@ end
 -- Ativa o foguete ao clique aplicando força física
 --------------------------------------------------------------------------------
 function ativarFoguete(self, event)
-  self:applyForce(0, -2, self.x, self.y)
+  self:applyForce(0, -1.5, self.x, self.y)
   --scene.view:insert(self)
+end
+function update(event)
+  -- Move o avião para cima
+  if(up) then
+    impulse = impulse - 3
+    foguete:setLinearVelocity(0, impulse)
+  end
 end
 --------------------------------------------------------------------------------
 
@@ -310,7 +334,7 @@ function controlarFoguete(event)
   end
   -- No fim do clique a força aplicada a nave é removida
   if (event.phase == "ended") then
-    Runtime:removeEventListener("enterFrame", foguete)
+      Runtime:removeEventListener("enterFrame", foguete)
   end
 end
 --------------------------------------------------------------------------------
@@ -325,13 +349,13 @@ function onLocalCollision(event)
 		    event.object2:removeSelf()
         ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
-		    event.object1:removeSelf()
+		    --event.object1:removeSelf()
         gameOver()
     elseif (event.object2.name == "foguete" and event.object1.name == "teto") then
-		    event.object2:removeSelf()
+		    --event.object2:removeSelf()
         gameOver()
     elseif (event.object2.name == "foguete" and event.object1.name == "chao") then
-		    event.object2:removeSelf()
+		    --event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
@@ -341,6 +365,12 @@ function onLocalCollision(event)
       event.object2:removeSelf()
     elseif (event.object1.name == "combustivel" and event.object2.name == "teto") then
         event.object1:removeSelf()
+    end
+    if (event.object1.name == "chao" and event.object2.name == "cometa") then
+      event.object2:removeSelf()
+    end
+    if (event.object1.name == "chao" and event.object2.name == "combustivel") then
+      event.object2:removeSelf()
     end
 	end
 end
