@@ -10,6 +10,7 @@ local scene = composer.newScene()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local teste
 local menuTxt
 local btComecarJogo
 local btCreditos
@@ -107,6 +108,11 @@ function carregarImgsMenu( )
   background.x = display.contentWidth / 2
   background.y = display.contentHeight / 2
   scene.view:insert(background)
+
+  teste = display.newImage("images/botao.png")
+  teste.x = display.contentWidth / 2
+  teste.y = display.contentHeight / 2
+  scene.view:insert(teste)
 
   menuTxt = display.newText("Menu", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(menuTxt)
