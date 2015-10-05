@@ -238,8 +238,8 @@ end
 --------------------------------------------------------------------------------
 function carregarCometas()
   cometa = display.newImage("images/cometaAzul.png")
-  cometa.x = _W + 150
-  cometa.y = math.random(25, _H - 50 )
+  cometa.x = display.contentWidth + 150
+  cometa.y = math.random(25, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   cometa.isSensor = true
@@ -255,8 +255,8 @@ end
 --------------------------------------------------------------------------------
 function carregarObjCombustivel()
   objCombustivel = display.newImage("images/cuboEnergia.png")
-  objCombustivel.x = _W + 150
-  objCombustivel.y = math.random(25, _H - 50 )
+  objCombustivel.x = display.contentWidth + 150
+  objCombustivel.y = math.random(25, display.contentHeight - 50 )
   objCombustivel.name = 'combustivel'
   physics.addBody( objCombustivel, "dynamic" )
   objCombustivel.isSensor = true
@@ -270,11 +270,11 @@ end
 -- Adicionar display DCP(Distância, Combustível, Pontos)
 --------------------------------------------------------------------------------
 function adicionarDisplayDCP()
-  distanciaTxt = display.newText("Distância 0 km", _W2 - 213, 620, native.systemFontBold, 20)
+  distanciaTxt = display.newText("Distância 0 km", display.contentCenterX - 213, 620, native.systemFontBold, 20)
   scene.view:insert(distanciaTxt)
-  combustivelTxt = display.newText("Combustível 0 mil/l", _W2 + 10, 620, native.systemFontBold, 20)
+  combustivelTxt = display.newText("Combustível 0 mil/l", display.contentCenterX + 10, 620, native.systemFontBold, 20)
   scene.view:insert(combustivelTxt)
-  pontosTxt = display.newText("0 Pontos", _W2 - (-190), 620, native.systemFontBold, 20)
+  pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), 620, native.systemFontBold, 20)
   scene.view:insert(pontosTxt)
 end
 
@@ -283,7 +283,7 @@ end
 -- Adicionar distância percorrida
 --------------------------------------------------------------------------------
 function adicionarDistancia()
-    distancia = distancia + 50
+    distancia = distancia + 5
     distanciaTxt.text = string.format("Distância %d km", distancia)
 end
 --------------------------------------------------------------------------------
@@ -418,10 +418,10 @@ function scrollEstrelas (event)
   estrelas2.x = estrelas2.x - speedEstrelas
 
   if (estrelas1.x + estrelas1.contentWidth) < 0 then
-    estrelas1:translate( _W * 4, 0 )
+    estrelas1:translate( display.contentWidth * 4, 0 )
   end
   if (estrelas2.x + estrelas2.contentWidth) < 0 then
-    estrelas2:translate( _W * 4, 0 )
+    estrelas2:translate( display.contentWidth * 4, 0 )
   end
 end
 --------------------------------------------------------------------------------

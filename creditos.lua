@@ -81,7 +81,6 @@ function scene:destroy(event)
 
   display.remove(background)
   --display.remove(creditosTxt)
-
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -109,7 +108,7 @@ function carregarImgsCreditos( )
   background.y = display.contentHeight / 2
   scene.view:insert(background)
 
-  creditosTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(creditosTxt)
 
   btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX, display.contentCenterY)

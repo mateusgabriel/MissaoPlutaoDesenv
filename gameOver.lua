@@ -39,7 +39,7 @@ function scene:create(event)
   calcularResultadoFinal()
   criarGrupos()
 
-  resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 160, native.systemFontBold, 20)
+  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 160, native.systemFontBold, 20)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -94,7 +94,6 @@ function scene:destroy(event)
 
   display.remove(background)
   --display.remove(gameOverTxt)
-  
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -131,13 +130,13 @@ function carregarImgsGameOver( )
   btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX, display.contentCenterY + 50)
   scene.view:insert(btRetornarMenu)
 
-  combustivelConsumidoTxt = display.newText('' .. combustivel, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
+  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('' .. distancia, display.contentCenterX, display.contentCenterY + 120, native.systemFontBold, 20)
+  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY + 120, native.systemFontBold, 20)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('' .. pontos, display.contentCenterX, display.contentCenterY + 140, native.systemFontBold, 20)
+  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 140, native.systemFontBold, 20)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------
@@ -147,7 +146,11 @@ end
 -- Calcula o resultado final com bases nos valores globais de distância e pontos
 --------------------------------------------------------------------------------
 function calcularResultadoFinal()
-  resultadoFinal = distancia * pontos
+  if (pontos == 0 or pontos == 1) then
+    resultadoFinal = distancia
+  else
+    resultadoFinal = distancia * pontos
+  end
 end
 --------------------------------------------------------------------------------
 

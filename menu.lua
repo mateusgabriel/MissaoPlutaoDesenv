@@ -82,7 +82,6 @@ function scene:destroy(event)
 
   display.remove(background)
   --display.remove(menuTxt)
-  
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -125,7 +124,6 @@ end
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
 local configTransicaoJogo = {
-
 	effect = "fade", time = 500
 }
 --------------------------------------------------------------------------------
@@ -134,7 +132,6 @@ local configTransicaoJogo = {
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
 local configTransicaoCreditos = {
-
 	effect = "fade", time = 550
 }
 --------------------------------------------------------------------------------
@@ -148,6 +145,7 @@ function comecarJogo( )
 	composer.gotoScene("jogo", configTransicaoJogo)
 end
 --------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 -- Função que chama cena de créditos do jogo

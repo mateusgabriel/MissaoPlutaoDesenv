@@ -7,12 +7,13 @@ composer.gotoScene("menu")
 
 --------------------------------------------------------------------------------
 -- Variáveis globais
+  -- DIM = DIMENSÃO
 --------------------------------------------------------------------------------
 distancia = 0
 distanciaAux = 250
 combustivel = 1000
 pontos = 0
-_W = display.contentWidth
-_H = display.contentHeight
-_W2 = display.contentCenterX
-_H2 = display.contentCenterY
+--_W = display.contentWidth
+--_H = display.contentHeight
+--centerLargura = display.contentCenterX
+--centerAltura = display.contentCenterY
