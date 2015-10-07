@@ -39,7 +39,7 @@ function scene:create(event)
   calcularResultadoFinal()
   criarGrupos()
 
-  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 160, native.systemFontBold, 20)
+  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -124,19 +124,19 @@ function carregarImgsGameOver( )
   gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(gameOverTxt)
 
-  btRetornarJogo = display.newText("Retornar ao jogo", display.contentCenterX, display.contentCenterY)
+  btRetornarJogo = display.newText("Jogar Novamente!", display.contentCenterX - 250, display.contentCenterY + 250)
   scene.view:insert(btRetornarJogo)
 
-  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX, display.contentCenterY + 50)
+  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX + 250, display.contentCenterY + 250)
   scene.view:insert(btRetornarMenu)
 
-  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
+  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 40, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY + 120, native.systemFontBold, 20)
+  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY + 60, native.systemFontBold, 20)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 140, native.systemFontBold, 20)
+  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 80, native.systemFontBold, 20)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ end
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicaoJogoMenu = {
+local configTransicaoJogoSubMenu = {
 	effect = "fade", time = 1000
 }
 --------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ local configTransicaoJogoMenu = {
 --------------------------------------------------------------------------------
 function retornarJogo( )
   composer.removeScene("gameOver")
-	composer.gotoScene("jogo", configTransicaoJogoMenu)
+	composer.gotoScene("jogo", configTransicaoJogoSubMenu)
   distancia = 0
   distanciaAux = 250
   combustivel = 1000
@@ -182,7 +182,7 @@ end
 --------------------------------------------------------------------------------
 function retornarMenu( )
   composer.removeScene("gameOver")
-	composer.gotoScene("menu", configTransicaoJogoMenu)
+	composer.gotoScene("submenu", configTransicaoJogoSubMenu)
   distancia = 0
   distanciaAux = 250
   combustivel = 1000

@@ -40,7 +40,7 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
-  composer.removeScene("menu")
+  composer.removeScene("submenu")
 
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
@@ -111,7 +111,7 @@ function carregarImgsCreditos( )
   creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(creditosTxt)
 
-  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX, display.contentCenterY)
+  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX - 250, display.contentCenterY + 250)
   scene.view:insert(btRetornarMenu)
 end
 --------------------------------------------------------------------------------

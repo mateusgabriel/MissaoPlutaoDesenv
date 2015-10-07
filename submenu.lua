@@ -10,18 +10,17 @@ local scene = composer.newScene()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
-local cet
 local cce
 local cce2
-local toqueTxt
-local teste
-local menuTxt
+local btComecarJogo
+local btCreditos
+local comecarJogo = {}
+local creditos = {}
 local carregarImgMenu = {}
 local carregarEfeitoToque = {}
 local carregarTextoToque = {}
 local carregarCeuEstrelado = {}
 local carregarCeuEstrelado2 = {}
-local carregarSubMenu = {}
 local criarGrupos = {}
 local toqueParaComecar = {}
 --------------------------------------------------------------------------------
@@ -35,7 +34,6 @@ function scene:create(event)
   local sceneGroup = self.view
   carregarImgsMenu()
   criarGrupos()
-  carregarTextoToque()
 
 end
 --------------------------------------------------------------------------------
@@ -48,16 +46,17 @@ function scene:show(event)
   local sceneGroup = self.view
   local phase = event.phase
 
-  composer.removeScene("submenu")
+  composer.removeScene("menu")
+  composer.removeScene("jogo")
   composer.removeScene("creditos")
 
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    cet = timer.performWithDelay(800, carregarEfeitoToque, 0)
+    btComecarJogo:addEventListener("touch", comecarJogo)
+    btCreditos:addEventListener("touch", creditos)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
-    toqueTxt:addEventListener("touch", carregarSubMenu)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -85,7 +84,7 @@ end
 
 
 --------------------------------------------------------------------------------
--- Scene:destroy
+-- Chamado quando cena atual é removida
 --------------------------------------------------------------------------------
 function scene:destroy(event)
   local sceneGroup = self.view
@@ -129,57 +128,15 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  options = { width = 72, height = 72, numFrames = 19}
-  playerSheet = graphics.newImageSheet( "images/asteroid5.png", options )
-  sequenceData = {
-    { name = "rotacao", start = 1, count = 19 , time = 5000, loopCount = 0}
-  }
-  teste = display.newSprite( playerSheet, sequenceData )
-  --teste = display.newCircle(250, 250, 150);
-  teste.x = display.contentCenterX
-  teste.y = display.contentCenterY - 50
-  teste:play()
-  scene.view:insert(teste)
+  btComecarJogo = display.newText("Começar", display.contentCenterX + 250, display.contentCenterY + 250)
+  scene.view:insert(btComecarJogo)
 
-  menuTxt = display.newImage("images/logomarca.png")
-  menuTxt.x = display.contentCenterX
-  menuTxt.y = display.contentCenterY + 160
-  scene.view:insert(menuTxt)
+  btCreditos = display.newText("Créditos", display.contentCenterX - 250, display.contentCenterY + 250)
+  scene.view:insert(btCreditos)
 end
 --------------------------------------------------------------------------------
 
 
---------------------------------------------------------------------------------
--- Carregar texto de "Toque para iniciar"
---------------------------------------------------------------------------------
-function carregarTextoToque()
- toqueTxt = display.newImage("images/iniciar.png")
- toqueTxt.x = display.contentCenterX
- toqueTxt.y = display.contentCenterY + 270
- toqueTxt.alpha = 0
- scene.view:insert(toqueTxt)
-end
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
--- Carregar efeito de texto de "Toque para iniciar"
---------------------------------------------------------------------------------
-function carregarEfeitoToque()
-  if (toqueTxt ~= nil) then
-    if (toqueTxt.alpha > 0) then
-        transition.to(toqueTxt, {time=100, alpha=0})
-    else
-        transition.to(toqueTxt, {time=100, alpha=1})
-    end
-  end
-end
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
--- Carregar background com estrelas brilhando
---------------------------------------------------------------------------------
 function carregarCeuEstrelado()
   if (ceuEstrelado ~= nil) then
     if (ceuEstrelado.alpha > 0) then
@@ -199,24 +156,40 @@ function carregarCeuEstrelado2()
     end
   end
 end
---------------------------------------------------------------------------------
-
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicaoSubMenu = {
+local configTransicaoJogo = {
 	effect = "fade", time = 500
+}
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Configuração de transição entre cenas
+--------------------------------------------------------------------------------
+local configTransicaoCreditos = {
+	effect = "fade", time = 550
 }
 --------------------------------------------------------------------------------
 
 
 --------------------------------------------------------------------------------
--- Função que chama cena de submenu do jogo
+-- Função que chama cena para início do jogo
 --------------------------------------------------------------------------------
-function carregarSubMenu( )
-  composer.removeScene("menu")
-	composer.gotoScene("submenu", configTransicaoSubMenu)
+function comecarJogo( )
+  composer.removeScene("submenu")
+	composer.gotoScene("jogo", configTransicaoJogo)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Função que chama cena de créditos do jogo
+--------------------------------------------------------------------------------
+function creditos( )
+  composer.removeScene("submenu")
+	composer.gotoScene("creditos", configTransicaoCreditos)
 end
 --------------------------------------------------------------------------------
 
