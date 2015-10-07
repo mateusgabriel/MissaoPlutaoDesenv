@@ -116,9 +116,9 @@ end
 -- Carregar imagens contidas no menu
 --------------------------------------------------------------------------------
 function carregarImgsGameOver( )
-  background = display.newImage("images/ceu.fw.png")
-  background.x = display.contentWidth / 2
-  background.y = display.contentHeight / 2
+  background = display.newImageRect("images/ceu.png", display.contentWidth, display.contentHeight)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
   scene.view:insert(background)
 
   gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
@@ -158,7 +158,7 @@ end
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
 local configTransicaoJogoMenu = {
-	effect = "fade", time = 500
+	effect = "fade", time = 1000
 }
 --------------------------------------------------------------------------------
 

@@ -171,20 +171,25 @@ end
 -- Carregar imagens contidas no menu
 --------------------------------------------------------------------------------
 function carregarImgsJogo( )
-  background = display.newImage("images/ceu.fw.png")
-  background.x = display.contentWidth /2
-  background.y = display.contentHeight /2
+  background = display.newImageRect("images/ceu.png", display.contentWidth, display.contentHeight)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
   scene.view:insert(background)
 
-  estrelas1 = display.newImage("images/estrelas.png")
-  estrelas1.x = 0
-  estrelas1.y = 600
+  estrelas1 = display.newImageRect("images/estrelas.png", display.contentWidth, display.contentHeight)
+  estrelas1.x = display.contentCenterX
+  estrelas1.y = display.contentCenterY
   scene.view:insert(estrelas1)
 
-  estrelas2 = display.newImage("images/estrelas.png")
-  estrelas2.x = 1940
-  estrelas2.y = 600
+  estrelas2 = display.newImageRect("images/estrelas.png", display.contentWidth, display.contentHeight)
+  estrelas2.x = estrelas1.x + display.contentWidth
+  estrelas2.y = display.contentCenterY
   scene.view:insert(estrelas2)
+
+  estrelas3 = display.newImageRect("images/estrelas.png", display.contentWidth, display.contentHeight)
+  estrelas3.x = estrelas2.x + display.contentWidth
+  estrelas3.y = display.contentCenterY
+  scene.view:insert(estrelas3)
 
   teto1 = display.newImage("images/metero.png")
   teto1.x = 0
@@ -207,9 +212,9 @@ function carregarImgsJogo( )
   physics.addBody(teto3, "static")
   scene.view:insert(teto3)
 
-  chao = display.newImage("images/chao.png")
-  chao.x = 400
-  chao.y = 669
+  chao = display.newImageRect("images/chao.png", display.contentWidth, display.contentHeight)
+  chao.x = display.contentCenterX
+  chao.y = display.contentCenterY + 740
   chao.name = 'chao'
   physics.addBody(chao, "static")
   scene.view:insert(chao)
@@ -270,11 +275,11 @@ end
 -- Adicionar display DCP(Distância, Combustível, Pontos)
 --------------------------------------------------------------------------------
 function adicionarDisplayDCP()
-  distanciaTxt = display.newText("Distância 0 km", display.contentCenterX - 213, 620, native.systemFontBold, 20)
+  distanciaTxt = display.newText("Distância 0 km", display.contentCenterX - 213, display.contentCenterY + 280, native.systemFontBold, 20)
   scene.view:insert(distanciaTxt)
-  combustivelTxt = display.newText("Combustível 0 mil/l", display.contentCenterX + 10, 620, native.systemFontBold, 20)
+  combustivelTxt = display.newText("Combustível 0 mil/l", display.contentCenterX + 10, display.contentCenterY + 280, native.systemFontBold, 20)
   scene.view:insert(combustivelTxt)
-  pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), 620, native.systemFontBold, 20)
+  pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), display.contentCenterY + 280, native.systemFontBold, 20)
   scene.view:insert(pontosTxt)
 end
 
@@ -416,12 +421,16 @@ end
 function scrollEstrelas (event)
   estrelas1.x = estrelas1.x - speedEstrelas
   estrelas2.x = estrelas2.x - speedEstrelas
+  estrelas3.x = estrelas3.x - speedEstrelas
 
   if (estrelas1.x + estrelas1.contentWidth) < 0 then
-    estrelas1:translate( display.contentWidth * 4, 0 )
+    estrelas1:translate( display.contentWidth * 3, 0 )
   end
   if (estrelas2.x + estrelas2.contentWidth) < 0 then
-    estrelas2:translate( display.contentWidth * 4, 0 )
+    estrelas2:translate( display.contentWidth * 3, 0 )
+  end
+  if (estrelas3.x + estrelas3.contentWidth) < 0 then
+    estrelas3:translate( display.contentWidth * 3, 0 )
   end
 end
 --------------------------------------------------------------------------------

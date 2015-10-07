@@ -103,9 +103,9 @@ end
 -- Carregar imagens contidas no menu
 --------------------------------------------------------------------------------
 function carregarImgsCreditos( )
-  background = display.newImage("images/ceu.fw.png")
-  background.x = display.contentWidth / 2
-  background.y = display.contentHeight / 2
+  background = display.newImageRect("images/ceu.png", display.contentWidth, display.contentHeight)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
   scene.view:insert(background)
 
   creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)

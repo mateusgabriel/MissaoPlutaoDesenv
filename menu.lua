@@ -104,23 +104,25 @@ end
 -- Carregar imagens contidas no menu
 --------------------------------------------------------------------------------
 function carregarImgsMenu( )
-  background = display.newImage("images/ceu.fw.png")
-  background.x = display.contentWidth / 2
-  background.y = display.contentHeight / 2
+  background = display.newImageRect("images/ceu.png", display.contentWidth, display.contentHeight)
+  background.x = display.contentCenterX
+  background.y = display.contentCenterY
   scene.view:insert(background)
 
-  teste = display.newImage("images/botao.png")
-  teste.x = display.contentWidth / 2
-  teste.y = display.contentHeight / 2
+  teste = display.newCircle(250, 250, 150);
+  teste.x = display.contentCenterX
+  teste.y = display.contentCenterY - 100
   scene.view:insert(teste)
 
-  menuTxt = display.newText("Menu", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  menuTxt = display.newImage("images/logomarca.png")
+  menuTxt.x = display.contentCenterX
+  menuTxt.y = display.contentCenterY + 100
   scene.view:insert(menuTxt)
 
-  btComecarJogo = display.newText("Jogo", display.contentCenterX, display.contentCenterY)
+  btComecarJogo = display.newText("Jogo", display.contentCenterX + 300, display.contentCenterY + 180)
   scene.view:insert(btComecarJogo)
 
-  btCreditos = display.newText("Créditos", display.contentCenterX, display.contentCenterY + 50)
+  btCreditos = display.newText("Créditos", display.contentCenterX + 300, display.contentCenterY + 250)
   scene.view:insert(btCreditos)
 end
 --------------------------------------------------------------------------------
