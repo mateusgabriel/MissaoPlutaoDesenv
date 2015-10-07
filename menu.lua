@@ -10,6 +10,10 @@ local scene = composer.newScene()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local cet
+local cce
+local cce2
+local toqueTxt
 local teste
 local menuTxt
 local btComecarJogo
@@ -17,7 +21,12 @@ local btCreditos
 local comecarJogo = {}
 local creditos = {}
 local carregarImgMenu = {}
+local carregarEfeitoToque = {}
+local carregarTextoToque = {}
+local carregarCeuEstrelado = {}
+local carregarCeuEstrelado2 = {}
 local criarGrupos = {}
+local toqueParaComecar = {}
 --------------------------------------------------------------------------------
 
 
@@ -29,6 +38,7 @@ function scene:create(event)
   local sceneGroup = self.view
   carregarImgsMenu()
   criarGrupos()
+  carregarTextoToque()
 
 end
 --------------------------------------------------------------------------------
@@ -49,6 +59,9 @@ function scene:show(event)
   elseif (phase == "did") then
     btComecarJogo:addEventListener("touch", comecarJogo)
     btCreditos:addEventListener("touch", creditos)
+    cet = timer.performWithDelay(800, carregarEfeitoToque, 0)
+    cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
+    cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -82,7 +95,6 @@ function scene:destroy(event)
   local sceneGroup = self.view
 
   display.remove(background)
-  --display.remove(menuTxt)
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -109,14 +121,26 @@ function carregarImgsMenu( )
   background.y = display.contentCenterY
   scene.view:insert(background)
 
+  ceuEstrelado = display.newImageRect("images/ceuEstrelado.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado.x = display.contentCenterX
+  ceuEstrelado.y = display.contentCenterY
+  ceuEstrelado.alpha = 0
+  scene.view:insert(ceuEstrelado)
+
+  ceuEstrelado2 = display.newImageRect("images/ceuEstrelado2.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado2.x = display.contentCenterX
+  ceuEstrelado2.y = display.contentCenterY
+  ceuEstrelado2.alpha = 0
+  scene.view:insert(ceuEstrelado2)
+
   teste = display.newCircle(250, 250, 150);
   teste.x = display.contentCenterX
-  teste.y = display.contentCenterY - 100
+  teste.y = display.contentCenterY - 60
   scene.view:insert(teste)
 
   menuTxt = display.newImage("images/logomarca.png")
   menuTxt.x = display.contentCenterX
-  menuTxt.y = display.contentCenterY + 100
+  menuTxt.y = display.contentCenterY + 150
   scene.view:insert(menuTxt)
 
   btComecarJogo = display.newText("Jogo", display.contentCenterX + 300, display.contentCenterY + 180)
@@ -127,6 +151,43 @@ function carregarImgsMenu( )
 end
 --------------------------------------------------------------------------------
 
+function carregarTextoToque()
+ toqueTxt = display.newImage("images/iniciar.png")
+ toqueTxt.x = display.contentCenterX
+ toqueTxt.y = display.contentCenterY + 270
+ toqueTxt.alpha = 0
+ scene.view:insert(toqueTxt)
+end
+
+function carregarEfeitoToque()
+  if (toqueTxt ~= nil) then
+    if (toqueTxt.alpha > 0) then
+        transition.to(toqueTxt, {time=300, alpha=0})
+    else
+        transition.to(toqueTxt, {time=300, alpha=1})
+    end
+  end
+end
+
+function carregarCeuEstrelado()
+  if (ceuEstrelado ~= nil) then
+    if (ceuEstrelado.alpha > 0) then
+        transition.to(ceuEstrelado, {time=1200, alpha=0})
+    else
+        transition.to(ceuEstrelado, {time=1200, alpha=1})
+    end
+  end
+end
+
+function carregarCeuEstrelado2()
+  if (ceuEstrelado2 ~= nil) then
+    if (ceuEstrelado2.alpha > 0) then
+        transition.to(ceuEstrelado2, {time=1500, alpha=0})
+    else
+        transition.to(ceuEstrelado2, {time=1500, alpha=1})
+    end
+  end
+end
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
