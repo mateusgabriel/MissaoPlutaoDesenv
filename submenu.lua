@@ -101,8 +101,8 @@ end
 -- Cria grupo(s) para unir elementos da tela
 --------------------------------------------------------------------------------
 function criarGrupos( )
-  grupoMenu = display.newGroup( )
-  scene.view:insert(grupoMenu)
+  --grupoMenu = display.newGroup( )
+  --scene.view:insert(grupoMenu)
 end
 --------------------------------------------------------------------------------
 

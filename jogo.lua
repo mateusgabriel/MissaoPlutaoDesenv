@@ -12,6 +12,8 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local cometa
+local foguete
 local grupoCombComet
 local grupoFoguete
 local speed = 8000
@@ -316,7 +318,7 @@ end
 -- Ativa o foguete ao clique aplicando força física
 --------------------------------------------------------------------------------
 local function ativarFoguete(self, event)
-  self:applyForce(0, -2, self.x, self.y)
+    self:applyForce(0, -2, self.x, self.y)
 end
 --------------------------------------------------------------------------------
 
