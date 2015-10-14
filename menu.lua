@@ -129,16 +129,16 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  options = { width = 72, height = 72, numFrames = 19}
-  playerSheet = graphics.newImageSheet( "images/asteroid5.png", options )
-  sequenceData = {
-    { name = "rotacao", start = 1, count = 19 , time = 5000, loopCount = 0}
-  }
-  teste = display.newSprite( playerSheet, sequenceData )
-  --teste = display.newCircle(250, 250, 150);
+  --options = { width = 72, height = 72, numFrames = 19}
+  --playerSheet = graphics.newImageSheet( "images/asteroid5.png", options )
+  --sequenceData = {
+  --  { name = "rotacao", start = 1, count = 19 , time = 5000, loopCount = 0}
+  --}
+  --teste = display.newSprite( playerSheet, sequenceData )
+  teste = display.newCircle(250, 250, 150);
   teste.x = display.contentCenterX
   teste.y = display.contentCenterY - 50
-  teste:play()
+  --teste:play()
   scene.view:insert(teste)
 
   menuTxt = display.newImage("images/logomarca.png")
@@ -153,7 +153,7 @@ end
 -- Carregar texto de "Toque para iniciar"
 --------------------------------------------------------------------------------
 function carregarTextoToque()
- toqueTxt = display.newImage("images/iniciar.png")
+ toqueTxt = display.newImage("images/toqueParaIniciar.png")
  toqueTxt.x = display.contentCenterX
  toqueTxt.y = display.contentCenterY + 270
  toqueTxt.alpha = 0

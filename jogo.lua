@@ -43,6 +43,7 @@ local perderCP = {}
 local ganharCP = {}
 local scrollEstrelas = {}
 local perderCombustivelPontosPorDistancia = {}
+local onLocalCollision = {}
 --------------------------------------------------------------------------------
 
 
@@ -79,7 +80,7 @@ function scene:show(event)
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
-    background:addEventListener("touch", controlarFoguete)
+    Runtime:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
     -- Chama quando a cena está na tela
@@ -116,6 +117,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  Runtime:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("collision", onLocalCollision)
   Runtime:removeEventListener("enterFrame", scrollEstrelas)
   display.remove(grupoCombComet)
@@ -317,7 +319,7 @@ end
 --------------------------------------------------------------------------------
 -- Ativa o foguete ao clique aplicando força física
 --------------------------------------------------------------------------------
-local function ativarFoguete(self, event)
+function ativarFoguete(self, event)
     self:applyForce(0, -2, self.x, self.y)
 end
 --------------------------------------------------------------------------------
@@ -347,6 +349,9 @@ function onLocalCollision(event)
 	if (event.phase == "began") then
     if (event.object1.name == "foguete" and event.object2.name == "combustivel") then
 		    event.object2:removeSelf()
+        ganharCP()
+    elseif (event.object1.name == "combustivel" and event.object2.name == "foguete") then
+        event.object1:removeSelf()
         ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
 		    event.object1:removeSelf()
