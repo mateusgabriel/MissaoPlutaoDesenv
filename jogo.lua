@@ -35,7 +35,6 @@ local adicionarDistancia = {}
 local adicionarCombustivel = {}
 local adicionarPontos = {}
 local adicionarDisplayDCP = {}
-local ativarFoguete = {}
 local controlarFoguete = {}
 local criarGrupos = {}
 local gameOver = {}
@@ -43,7 +42,6 @@ local perderCP = {}
 local ganharCP = {}
 local scrollEstrelas = {}
 local perderCombustivelPontosPorDistancia = {}
-local onLocalCollision = {}
 --------------------------------------------------------------------------------
 
 
@@ -117,8 +115,8 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-  Runtime:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("collision", onLocalCollision)
+  Runtime:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("enterFrame", scrollEstrelas)
   display.remove(grupoCombComet)
   display.remove(teto1)
@@ -350,26 +348,31 @@ function onLocalCollision(event)
     if (event.object1.name == "foguete" and event.object2.name == "combustivel") then
 		    event.object2:removeSelf()
         ganharCP()
-    elseif (event.object1.name == "combustivel" and event.object2.name == "foguete") then
-        event.object1:removeSelf()
-        ganharCP()
-    elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
+    end
+    if (event.object1.name == "foguete" and event.object2.name == "cometa") then
 		    event.object1:removeSelf()
         gameOver()
-    elseif (event.object1.name == "cometa" and event.object2.name == "foguete") then
+    end
+    if (event.object1.name == "cometa" and event.object2.name == "foguete") then
         event.object2:removeSelf()
         gameOver()
-    elseif (event.object1.name == "foguete" and event.object2.name == "teto") then
+    end
+    if (event.object1.name == "foguete" and event.object2.name == "teto") then
 		    event.object1:removeSelf()
         gameOver()
-    elseif (event.object1.name == "teto" and event.object2.name == "foguete") then
+    end
+    if (event.object1.name == "teto" and event.object2.name == "foguete") then
         event.object2:removeSelf()
         gameOver()
-    elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
+    end
+    if (event.object1.name == "foguete" and event.object2.name == "chao") then
 		    event.object1:removeSelf()
+        print('passou!')
         gameOver()
-    elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
+    end
+    if (event.object1.name == "chao" and event.object2.name == "foguete") then
 		    event.object2:removeSelf()
+        print('passou tb!')
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then

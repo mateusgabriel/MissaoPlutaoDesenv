@@ -158,7 +158,7 @@ end
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
 local configTransicaoJogoSubMenu = {
-	effect = "fade", time = 1000
+	effect = "fade", time = 500
 }
 --------------------------------------------------------------------------------
 
