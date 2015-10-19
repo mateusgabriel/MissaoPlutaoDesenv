@@ -91,7 +91,6 @@ end
 
 --------------------------------------------------------------------------------
 -- Scene:hide
---------------------------------------------------------------------------------
 function scene:hide(event)
   local sceneGroup = self.view
   local phase = event.phase
@@ -367,12 +366,10 @@ function onLocalCollision(event)
     end
     if (event.object1.name == "foguete" and event.object2.name == "chao") then
 		    event.object1:removeSelf()
-        print('passou!')
         gameOver()
     end
     if (event.object1.name == "chao" and event.object2.name == "foguete") then
 		    event.object2:removeSelf()
-        print('passou tb!')
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
@@ -398,7 +395,7 @@ end
 -- Realiza cálculo de incremento de combustível e de pontos de acordo com a distância percorrida
 --------------------------------------------------------------------------------
 function ganharCP ()
-  combustivel = combustivel + 50
+  combustivel = combustivel + 25
   pontos = pontos + 2
 end
 --------------------------------------------------------------------------------
@@ -419,7 +416,7 @@ end
 function perderCombustivelPontosPorDistancia()
   if (distancia == distanciaAux) then
     perderCP()
-    distanciaAux = distanciaAux + 250
+    distanciaAux = distanciaAux +  150
   end
 end
 --------------------------------------------------------------------------------

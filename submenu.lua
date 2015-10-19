@@ -11,6 +11,7 @@ local scene = composer.newScene()
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
 local cce
+local ced
 local cce2
 local btComecarJogo
 local btCreditos
@@ -21,6 +22,7 @@ local carregarEfeitoToque = {}
 local carregarTextoToque = {}
 local carregarCeuEstrelado = {}
 local carregarCeuEstrelado2 = {}
+local carregarEnredo = {}
 local criarGrupos = {}
 local toqueParaComecar = {}
 --------------------------------------------------------------------------------
@@ -57,6 +59,7 @@ function scene:show(event)
     btCreditos:addEventListener("touch", creditos)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
+    ced = timer.performWithDelay(500, carregarEnredo, 0)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -90,6 +93,18 @@ function scene:destroy(event)
   local sceneGroup = self.view
 
   display.remove(background)
+  if (cce) then
+    timer.cancel(cce)
+    cce = nil
+  end
+  if (cce2) then
+    timer.cancel(cce2)
+    cce2 = nil
+  end
+  if (ced) then
+    timer.cancel(ced)
+    ced = nil
+  end
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -128,15 +143,38 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  btComecarJogo = display.newText("Começar", display.contentCenterX + 250, display.contentCenterY + 250)
+  enredo = display.newImageRect("images/enredo.png", display.contentWidth, display.contentHeight)
+  enredo.x = display.contentCenterX
+  enredo.y = display.contentCenterY + 130
+  enredo.alpha = 0
+  scene.view:insert(enredo)
+
+  btComecarJogo = display.newImage("images/botao.png")
+  btComecarJogo.x = display.contentCenterX + 235
+  btComecarJogo.y = display.contentCenterY + 250
   scene.view:insert(btComecarJogo)
 
-  btCreditos = display.newText("Créditos", display.contentCenterX - 250, display.contentCenterY + 250)
+  btCreditos = display.newImage("images/botao.png")
+  btCreditos.x = display.contentCenterX - 250
+  btCreditos.y = display.contentCenterY + 250
   scene.view:insert(btCreditos)
+
+  comecarTxt = display.newImage("images/comecar.png")
+  comecarTxt.x = display.contentCenterX + 250
+  comecarTxt.y = display.contentCenterY + 250
+  scene.view:insert(comecarTxt)
+
+  creditosTxt = display.newImage("images/creditos.png")
+  creditosTxt.x = display.contentCenterX - 235
+  creditosTxt.y = display.contentCenterY + 250
+  scene.view:insert(creditosTxt)
 end
 --------------------------------------------------------------------------------
 
 
+--------------------------------------------------------------------------------
+-- Carregar background com estrelas brilhando
+--------------------------------------------------------------------------------
 function carregarCeuEstrelado()
   if (ceuEstrelado ~= nil) then
     if (ceuEstrelado.alpha > 0) then
@@ -156,6 +194,21 @@ function carregarCeuEstrelado2()
     end
   end
 end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carregar Enredo na tela
+--------------------------------------------------------------------------------
+function carregarEnredo()
+  if (enredo ~= nil) then
+    if (enredo.alpha == 0) then
+        transition.to(enredo, {time=500, alpha=1})
+    end
+  end
+end
+--------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas

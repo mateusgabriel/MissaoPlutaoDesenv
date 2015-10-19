@@ -15,7 +15,6 @@ local cce
 local cce2
 local toqueTxt
 local teste
-local menuTxt
 local carregarImgMenu = {}
 local carregarEfeitoToque = {}
 local carregarTextoToque = {}
@@ -91,6 +90,18 @@ function scene:destroy(event)
   local sceneGroup = self.view
 
   display.remove(background)
+  if (cce) then
+    timer.cancel(cce)
+    cce = nil
+  end
+  if (cce2) then
+    timer.cancel(cce2)
+    cce2 = nil
+  end
+  if (cet) then
+    timer.cancel(cet)
+    cet = nil
+  end
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
@@ -135,16 +146,17 @@ function carregarImgsMenu( )
   --  { name = "rotacao", start = 1, count = 19 , time = 5000, loopCount = 0}
   --}
   --teste = display.newSprite( playerSheet, sequenceData )
-  teste = display.newCircle(250, 250, 150);
+  teste = display.newCircle(250, 250, 130);
   teste.x = display.contentCenterX
   teste.y = display.contentCenterY - 50
+  teste.alpha = 0.75
   --teste:play()
   scene.view:insert(teste)
 
-  menuTxt = display.newImage("images/logomarca.png")
-  menuTxt.x = display.contentCenterX
-  menuTxt.y = display.contentCenterY + 160
-  scene.view:insert(menuTxt)
+  logomarca = display.newImage("images/logomarca.png")
+  logomarca.x = display.contentCenterX
+  logomarca.y = display.contentCenterY + 140
+  scene.view:insert(logomarca)
 end
 --------------------------------------------------------------------------------
 

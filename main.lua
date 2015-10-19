@@ -16,6 +16,6 @@ composer.gotoScene("menu", configTransicaoMenu)
 -- Variáveis globais
 --------------------------------------------------------------------------------
 distancia = 0
-distanciaAux = 250
-combustivel = 1000
+distanciaAux = 150
+combustivel = 500
 pontos = 0
