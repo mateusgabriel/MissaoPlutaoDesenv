@@ -59,7 +59,7 @@ function scene:show(event)
     btCreditos:addEventListener("touch", creditos)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
-    ced = timer.performWithDelay(500, carregarEnredo, 0)
+    --ced = timer.performWithDelay(500, carregarEnredo, 0)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -146,7 +146,7 @@ function carregarImgsMenu( )
   enredo = display.newImageRect("images/enredo.png", display.contentWidth, display.contentHeight)
   enredo.x = display.contentCenterX
   enredo.y = display.contentCenterY + 130
-  enredo.alpha = 0
+  --enredo.alpha = 0
   scene.view:insert(enredo)
 
   btComecarJogo = display.newImage("images/botao.png")
