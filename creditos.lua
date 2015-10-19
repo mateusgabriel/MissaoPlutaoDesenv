@@ -12,11 +12,13 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local cce
+local cce2
 local btRetornarMenu
 local creditosTxt
 local carregarImgsCreditos = {}
 local criarGrupos = {}
-local retornarMenu = {}
+local retornarSubMenu = {}
 --------------------------------------------------------------------------------
 
 
@@ -45,7 +47,9 @@ function scene:show(event)
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    btRetornarMenu:addEventListener("touch", retornarMenu)
+    btRetornarMenu:addEventListener("touch", retornarSubMenu)
+    cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
+    cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -80,6 +84,14 @@ function scene:destroy(event)
   local sceneGroup = self.view
 
   display.remove(background)
+  if (cce) then
+    timer.cancel(cce)
+    cce = nil
+  end
+  if (cce2) then
+    timer.cancel(cce2)
+    cce2 = nil
+  end
   --display.remove(creditosTxt)
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
@@ -108,11 +120,55 @@ function carregarImgsCreditos( )
   background.y = display.contentCenterY
   scene.view:insert(background)
 
+  ceuEstrelado = display.newImageRect("images/ceuEstrelado.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado.x = display.contentCenterX
+  ceuEstrelado.y = display.contentCenterY
+  ceuEstrelado.alpha = 0
+  scene.view:insert(ceuEstrelado)
+
+  ceuEstrelado2 = display.newImageRect("images/ceuEstrelado2.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado2.x = display.contentCenterX
+  ceuEstrelado2.y = display.contentCenterY
+  ceuEstrelado2.alpha = 0
+  scene.view:insert(ceuEstrelado2)
+
   creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(creditosTxt)
 
-  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX - 250, display.contentCenterY + 250)
+  btRetornarMenu = display.newImage("images/botao.png")
+  btRetornarMenu.x = display.contentCenterX - 250
+  btRetornarMenu.y = display.contentCenterY + 250
   scene.view:insert(btRetornarMenu)
+
+  retornarMenuTxt = display.newImage("images/menu.png")
+  retornarMenuTxt.x = display.contentCenterX - 250
+  retornarMenuTxt.y = display.contentCenterY + 250
+  scene.view:insert(retornarMenuTxt)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carregar background com estrelas brilhando
+--------------------------------------------------------------------------------
+function carregarCeuEstrelado()
+  if (ceuEstrelado ~= nil) then
+    if (ceuEstrelado.alpha > 0) then
+        transition.to(ceuEstrelado, {time=1200, alpha=0})
+    else
+        transition.to(ceuEstrelado, {time=1200, alpha=1})
+    end
+  end
+end
+
+function carregarCeuEstrelado2()
+  if (ceuEstrelado2 ~= nil) then
+    if (ceuEstrelado2.alpha > 0) then
+        transition.to(ceuEstrelado2, {time=1500, alpha=0})
+    else
+        transition.to(ceuEstrelado2, {time=1500, alpha=1})
+    end
+  end
 end
 --------------------------------------------------------------------------------
 
@@ -120,7 +176,7 @@ end
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
-local configTransicaoMenu = {
+local configTransicaoSubMenu = {
 	effect = "fade", time = 550
 }
 --------------------------------------------------------------------------------
@@ -129,9 +185,9 @@ local configTransicaoMenu = {
 --------------------------------------------------------------------------------
 -- Função que chama cena para retorno ao jogo
 --------------------------------------------------------------------------------
-function retornarMenu( )
+function retornarSubMenu( )
   composer.removeScene("creditos")
-	composer.gotoScene("menu", configTransicaoMenu)
+	composer.gotoScene("submenu", configTransicaoSubMenu)
 end
 --------------------------------------------------------------------------------
 

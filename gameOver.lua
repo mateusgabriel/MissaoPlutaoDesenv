@@ -12,6 +12,8 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local cce
+local cce2
 local gameOverTxt
 local btRetornarJogo
 local btRetornarMenu
@@ -59,6 +61,8 @@ function scene:show(event)
   elseif (phase == "did") then
     btRetornarJogo:addEventListener("touch", retornarJogo)
     btRetornarMenu:addEventListener("touch", retornarMenu)
+    cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
+    cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -93,6 +97,14 @@ function scene:destroy(event)
   local sceneGroup = self.view
 
   display.remove(background)
+  if (cce) then
+    timer.cancel(cce)
+    cce = nil
+  end
+  if (cce2) then
+    timer.cancel(cce2)
+    cce2 = nil
+  end
   --display.remove(gameOverTxt)
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
@@ -121,14 +133,40 @@ function carregarImgsGameOver( )
   background.y = display.contentCenterY
   scene.view:insert(background)
 
+  ceuEstrelado = display.newImageRect("images/ceuEstrelado.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado.x = display.contentCenterX
+  ceuEstrelado.y = display.contentCenterY
+  ceuEstrelado.alpha = 0
+  scene.view:insert(ceuEstrelado)
+
+  ceuEstrelado2 = display.newImageRect("images/ceuEstrelado2.png", display.contentWidth, display.contentHeight)
+  ceuEstrelado2.x = display.contentCenterX
+  ceuEstrelado2.y = display.contentCenterY
+  ceuEstrelado2.alpha = 0
+  scene.view:insert(ceuEstrelado2)
+
   gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(gameOverTxt)
 
-  btRetornarJogo = display.newText("Jogar Novamente!", display.contentCenterX - 250, display.contentCenterY + 250)
+  btRetornarJogo = display.newImage("images/botao.png")
+  btRetornarJogo.x = display.contentCenterX - 250
+  btRetornarJogo.y = display.contentCenterY + 250
   scene.view:insert(btRetornarJogo)
 
-  btRetornarMenu = display.newText("Retornar ao menu", display.contentCenterX + 250, display.contentCenterY + 250)
+  btRetornarMenu = display.newImage("images/botao.png")
+  btRetornarMenu.x = display.contentCenterX + 250
+  btRetornarMenu.y = display.contentCenterY + 250
   scene.view:insert(btRetornarMenu)
+
+  retornarJogoTxt = display.newImage("images/jogarDeNovo.png")
+  retornarJogoTxt.x = display.contentCenterX - 240
+  retornarJogoTxt.y = display.contentCenterY + 250
+  scene.view:insert(retornarJogoTxt)
+
+  retornarMenuTxt = display.newImage("images/menu.png")
+  retornarMenuTxt.x = display.contentCenterX + 250
+  retornarMenuTxt.y = display.contentCenterY + 250
+  scene.view:insert(retornarMenuTxt)
 
   combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 40, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
@@ -138,6 +176,31 @@ function carregarImgsGameOver( )
 
   pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 80, native.systemFontBold, 20)
   scene.view:insert(pontosGanhosTxt)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carregar background com estrelas brilhando
+--------------------------------------------------------------------------------
+function carregarCeuEstrelado()
+  if (ceuEstrelado ~= nil) then
+    if (ceuEstrelado.alpha > 0) then
+        transition.to(ceuEstrelado, {time=1200, alpha=0})
+    else
+        transition.to(ceuEstrelado, {time=1200, alpha=1})
+    end
+  end
+end
+
+function carregarCeuEstrelado2()
+  if (ceuEstrelado2 ~= nil) then
+    if (ceuEstrelado2.alpha > 0) then
+        transition.to(ceuEstrelado2, {time=1500, alpha=0})
+    else
+        transition.to(ceuEstrelado2, {time=1500, alpha=1})
+    end
+  end
 end
 --------------------------------------------------------------------------------
 
