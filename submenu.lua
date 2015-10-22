@@ -160,12 +160,12 @@ function carregarImgsMenu( )
   scene.view:insert(btCreditos)
 
   comecarTxt = display.newImage("images/comecar.png")
-  comecarTxt.x = display.contentCenterX + 250
+  comecarTxt.x = display.contentCenterX + 242
   comecarTxt.y = display.contentCenterY + 250
   scene.view:insert(comecarTxt)
 
   creditosTxt = display.newImage("images/creditos.png")
-  creditosTxt.x = display.contentCenterX - 235
+  creditosTxt.x = display.contentCenterX - 242
   creditosTxt.y = display.contentCenterY + 250
   scene.view:insert(creditosTxt)
 end

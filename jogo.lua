@@ -12,11 +12,22 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
+local cos = math.cos
+local sin = math.sin
+local rad = math.rad
+local atan2 = math.atan2
+local deg = math.deg
+local raio = 45 -- Distancia do estilingue do centro do planeta
+local angulo = 90 -- Ponto de início da rotação
+local planeta
+local estilingue
 local cometa
-local foguete
+--local foguete
 local grupoCombComet
+local grupoPlanetaEstingue
 local grupoFoguete
 local speed = 8000
+local speedPlanetas = 30000
 local speedEstrelas = 2
 local cac -- recebe a criação(carregar) de cometas
 local add -- recebe o incrementador(adicionar) da distância
@@ -24,6 +35,7 @@ local pcp -- receber f decrementador de combustível e pontos
 local coc -- recebe a criação do objeto combustível
 local adp -- recebe o incrementador(adicionar) de pontos
 local adc -- recebe o incrementador(adicionar) do combustível
+local apd
 local distanciaTxt
 local combustivelTxt
 local pontosTxt
@@ -35,6 +47,13 @@ local adicionarDistancia = {}
 local adicionarCombustivel = {}
 local adicionarPontos = {}
 local adicionarDisplayDCP = {}
+local adicionarPlanetaPorDistancia = {}
+local adicionarMarte = {}
+local adicionarJupiter = {}
+local adicionarSaturno = {}
+local adicionarUrano = {}
+local adicionarNeturno = {}
+local adicionarPlutao = {}
 local controlarFoguete = {}
 local criarGrupos = {}
 local gameOver = {}
@@ -42,6 +61,8 @@ local perderCP = {}
 local ganharCP = {}
 local scrollEstrelas = {}
 local perderCombustivelPontosPorDistancia = {}
+local criarOrbita = {}
+local aumentarVelocidade = {}
 --------------------------------------------------------------------------------
 
 
@@ -72,15 +93,17 @@ function scene:show(event)
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    coc = timer.performWithDelay( 5000, carregarObjCombustivel, 0 )
-    cac = timer.performWithDelay( 1800, carregarCometas, 0 )
+    coc = timer.performWithDelay( 10000, carregarObjCombustivel, 10 )
+    cac = timer.performWithDelay( 1500, carregarCometas, 10 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
-    pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
+    pcp = timer.performWithDelay( 1000, perderCombustivelPontosPorDistancia, 0 )
+    apd = timer.performWithDelay( 800, adicionarPlanetaPorDistancia, 0)
     Runtime:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
+    --Runtime:addEventListener( "enterFrame", criarOrbita )
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -114,10 +137,13 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  --physics.stop()
   Runtime:removeEventListener("collision", onLocalCollision)
   Runtime:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("enterFrame", scrollEstrelas)
+  Runtime:removeEventListener("enterFrame", criarOrbita)
   display.remove(grupoCombComet)
+  display.remove(grupoPlanetaEstingue)
   display.remove(teto1)
   display.remove(teto2)
   display.remove(teto3)
@@ -148,6 +174,10 @@ function scene:destroy(event)
     timer.cancel(pcp)
     pcp = nil
   end
+  if (apd) then
+    timer.cancel(apd)
+    apd = nil
+  end
   --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
@@ -161,9 +191,11 @@ end
 --------------------------------------------------------------------------------
 function criarGrupos( )
   --grupoFoguete = display.newGroup( )
-  grupoCombComet = display.newGroup( )
+  grupoCombComet = display.newGroup()
+  grupoPlanetaEstingue = display.newGroup()
   --scene.view:insert(grupoFoguete)
   scene.view:insert(grupoCombComet)
+  scene.view:insert(grupoPlanetaEstingue)
 end
 --------------------------------------------------------------------------------
 
@@ -232,7 +264,8 @@ function carregarFoguete()
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isSensor = true;
-  physics.addBody(foguete, "dynamic")
+  --physics.addBody(foguete, "dynamic", {density=2, bounce=0.1, friction=2, radius=1})
+  physics.addBody(foguete, "dynamic", {density=2, bounce=0.1, friction=2, radius=1})
   scene.view:insert(foguete)
   --grupoFoguete:insert(foguete)
 end
@@ -250,7 +283,7 @@ function carregarCometas()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   grupoCombComet:insert(cometa)
 end
 --------------------------------------------------------------------------------
@@ -266,7 +299,7 @@ function carregarObjCombustivel()
   objCombustivel.name = 'combustivel'
   physics.addBody( objCombustivel, "dynamic" )
   objCombustivel.isSensor = true
-  transition.to( objCombustivel, {time = speed, x = -50, y = objCombustivel.y})
+  transitionComb = transition.to( objCombustivel, {time = speed, x = -50, y = objCombustivel.y})
   grupoCombComet:insert(objCombustivel)
 end
 --------------------------------------------------------------------------------
@@ -283,6 +316,73 @@ function adicionarDisplayDCP()
   pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), display.contentCenterY + 280, native.systemFontBold, 20)
   scene.view:insert(pontosTxt)
 end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar planeta por Distância
+--------------------------------------------------------------------------------
+function adicionarPlanetaPorDistancia()
+  if (distancia == 100) then
+    adicionarMarte()
+  end
+  if (distancia == 500) then
+
+  end
+  if (distancia == 700) then
+
+  end
+  if (distancia == 900) then
+
+  end
+  if (distancia == 1100) then
+
+  end
+  if (distancia == 1300) then
+
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adiciona planeta Marte
+--------------------------------------------------------------------------------
+function adicionarMarte()
+  print('imprimiu marte')
+  planeta = display.newCircle(0, 0, 160)
+  planeta.x = display.contentWidth + 150
+  planeta.y = display.contentCenterY + 60
+  planeta.name = 'marte'
+  planeta:setFillColor(200,0,0)
+  --planeta.isSensor = true
+  transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y})
+  grupoPlanetaEstingue:insert(planeta)
+
+  estilingue = display.newRect(0,0,5,10)
+  estilingue.name = 'estilingue'
+  estilingue.isSensor = true
+  physics.addBody(estilingue)
+  grupoPlanetaEstingue:insert(estilingue)
+
+  Runtime:addEventListener( "enterFrame", criarOrbita )
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Criar/Configurar órbita
+--------------------------------------------------------------------------------
+function criarOrbita(event)
+  estilingue.x = planeta.x  + cos(rad(angulo)) * raio * 5
+  estilingue.y = planeta.y  + sin(rad(angulo)) * raio * 5
+
+  local anguloEstilingue = atan2(planeta.y-estilingue.y, planeta.x-estilingue.x)
+  estilingue.rotation = deg(anguloEstilingue)
+
+  angulo = angulo + 1
+end
+--------------------------------------------------------------------------------
 
 
 --------------------------------------------------------------------------------
@@ -327,7 +427,7 @@ end
 --------------------------------------------------------------------------------
 function controlarFoguete(event)
   -- Ao clicar na tela é aplicada força na nave
-  if (event.phase == "began") then
+  if (event.phase == "began" and foguete ~= nil) then
     foguete.enterFrame = ativarFoguete
     Runtime:addEventListener("enterFrame", foguete)
   end
@@ -349,31 +449,36 @@ function onLocalCollision(event)
         ganharCP()
     end
     if (event.object1.name == "foguete" and event.object2.name == "cometa") then
-		    event.object1:removeSelf()
+		    --event.object1:removeSelf()
         gameOver()
     end
     if (event.object1.name == "cometa" and event.object2.name == "foguete") then
-        event.object2:removeSelf()
+        --event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "foguete" and event.object2.name == "teto") then
-		    event.object1:removeSelf()
+		    --event.object1:removeSelf()
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "foguete") then
-        event.object2:removeSelf()
+        --event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "foguete" and event.object2.name == "chao") then
-		    event.object1:removeSelf()
+		    --event.object1:removeSelf()
         gameOver()
     end
     if (event.object1.name == "chao" and event.object2.name == "foguete") then
-		    event.object2:removeSelf()
+		    --event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
       event.object2:removeSelf()
+    end
+    if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
+      print('pegou estilingue')
+      event.object2:removeSelf()
+      aumentarVelocidade()
     end
     if (event.object1.name == "teto" and event.object2.name == "combustivel") then
       event.object2:removeSelf()
@@ -387,6 +492,17 @@ function onLocalCollision(event)
       event.object2:removeSelf()
     end
 	end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- A cada 500km percorridos serão decrementados combustível e pontos do jogador
+--------------------------------------------------------------------------------
+function aumentarVelocidade()
+  speedEstrelas = speedEstrelas + 2
+  speed = speed + 2
+  distancia = distancia + 15
 end
 --------------------------------------------------------------------------------
 

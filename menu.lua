@@ -56,7 +56,7 @@ function scene:show(event)
     cet = timer.performWithDelay(800, carregarEfeitoToque, 0)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
-    toqueTxt:addEventListener("touch", carregarSubMenu)
+    background:addEventListener("touch", carregarSubMenu)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc
@@ -153,7 +153,7 @@ function carregarImgsMenu( )
   --teste:play()
   scene.view:insert(teste)
 
-  logomarca = display.newImage("images/logomarca.png")
+  logomarca = display.newImage("images/logomarcaTeste.png")
   logomarca.x = display.contentCenterX
   logomarca.y = display.contentCenterY + 140
   scene.view:insert(logomarca)
@@ -228,7 +228,7 @@ local configTransicaoSubMenu = {
 --------------------------------------------------------------------------------
 function carregarSubMenu( )
   composer.removeScene("menu")
-	composer.gotoScene("submenu", configTransicaoSubMenu)
+	composer.gotoScene("jogo", configTransicaoSubMenu)
 end
 --------------------------------------------------------------------------------
 
