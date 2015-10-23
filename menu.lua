@@ -228,7 +228,7 @@ local configTransicaoSubMenu = {
 --------------------------------------------------------------------------------
 function carregarSubMenu( )
   composer.removeScene("menu")
-	composer.gotoScene("jogo", configTransicaoSubMenu)
+	composer.gotoScene("submenu", configTransicaoSubMenu)
 end
 --------------------------------------------------------------------------------
 

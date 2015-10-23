@@ -4,6 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
+--physics.setGravity( 0, 0 )
 physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ local angulo = 90 -- Ponto de início da rotação
 local planeta
 local estilingue
 local cometa
---local foguete
+local foguete
 local grupoCombComet
 local grupoPlanetaEstingue
 local grupoFoguete
@@ -99,7 +100,7 @@ function scene:show(event)
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1000, perderCombustivelPontosPorDistancia, 0 )
-    apd = timer.performWithDelay( 800, adicionarPlanetaPorDistancia, 0)
+    --apd = timer.performWithDelay( 800, adicionarPlanetaPorDistancia, 0)
     Runtime:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
@@ -137,11 +138,11 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-  --physics.stop()
   Runtime:removeEventListener("collision", onLocalCollision)
   Runtime:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("enterFrame", scrollEstrelas)
   Runtime:removeEventListener("enterFrame", criarOrbita)
+  Runtime:removeEventListener("enterFrame", ativarFoguete)
   display.remove(grupoCombComet)
   display.remove(grupoPlanetaEstingue)
   display.remove(teto1)
@@ -265,7 +266,7 @@ function carregarFoguete()
   foguete.name = 'foguete'
   foguete.isSensor = true;
   --physics.addBody(foguete, "dynamic", {density=2, bounce=0.1, friction=2, radius=1})
-  physics.addBody(foguete, "dynamic", {density=2, bounce=0.1, friction=2, radius=1})
+  physics.addBody(foguete, "dynamic")
   scene.view:insert(foguete)
   --grupoFoguete:insert(foguete)
 end
@@ -382,7 +383,7 @@ function criarOrbita(event)
 
   angulo = angulo + 1
 end
---------------------------------------------------------------------------------
+------------------------------------''--------------------------------------------
 
 
 --------------------------------------------------------------------------------
@@ -417,7 +418,7 @@ end
 -- Ativa o foguete ao clique aplicando força física
 --------------------------------------------------------------------------------
 function ativarFoguete(self, event)
-    self:applyForce(0, -2, self.x, self.y)
+    self:applyForce(0, -2.0, self.x, self.y)
 end
 --------------------------------------------------------------------------------
 
@@ -427,7 +428,7 @@ end
 --------------------------------------------------------------------------------
 function controlarFoguete(event)
   -- Ao clicar na tela é aplicada força na nave
-  if (event.phase == "began" and foguete ~= nil) then
+  if (event.phase == "began") then
     foguete.enterFrame = ativarFoguete
     Runtime:addEventListener("enterFrame", foguete)
   end

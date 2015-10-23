@@ -233,8 +233,8 @@ function retornarJogo( )
   composer.removeScene("gameOver")
 	composer.gotoScene("jogo", configTransicaoJogoSubMenu)
   distancia = 0
-  distanciaAux = 250
-  combustivel = 1000
+  distanciaAux = 150
+  combustivel = 500
   pontos = 0
 end
 --------------------------------------------------------------------------------
