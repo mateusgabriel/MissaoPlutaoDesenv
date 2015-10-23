@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene( )
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 

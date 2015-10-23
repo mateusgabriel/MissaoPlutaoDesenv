@@ -19,3 +19,5 @@ distancia = 0
 distanciaAux = 150
 combustivel = 500
 pontos = 0
+vidasAux = 5
+vidas = 0
