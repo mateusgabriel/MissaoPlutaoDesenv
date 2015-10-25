@@ -25,7 +25,7 @@ local sin = math.sin
 local rad = math.rad
 local atan2 = math.atan2
 local deg = math.deg
-local raio = 44 -- Distancia do estilingue do centro do planeta
+local raio = 35 -- Distancia do estilingue do centro do planeta
 local angulo = 90 -- Ponto de início da rotação
 local planeta
 local estilingue
@@ -295,7 +295,7 @@ end
 -- Carregar objeto combustível
 --------------------------------------------------------------------------------
 function carregarObjCombustivel()
-  objCombustivel = display.newImage("images/cuboEnergia.png")
+  objCombustivel = display.newImage("images/combustivel.png")
   objCombustivel.x = display.contentWidth + 150
   objCombustivel.y = math.random(25, display.contentHeight - 50 )
   objCombustivel.name = 'combustivel'
@@ -327,9 +327,11 @@ end
 function adicionarPlanetaPorDistancia()
   if (distancia == 100) then
     adicionarMarte()
+    --Runtime.removeEventListener("enterFrame", criarOrbita)
   end
   if (distancia == 250) then
-    --adicionarJupiter()
+    adicionarJupiter()
+    --Runtime.removeEventListener("enterFrame", criarOrbita)
     --cac = timer.performWithDelay( 1000, carregarCometasAzuis, 20 )
   end
   if (distancia == 700) then
@@ -352,8 +354,7 @@ end
 -- Adiciona planeta Marte
 --------------------------------------------------------------------------------
 function adicionarMarte()
-  print('imprimiu marte')
-  planeta = display.newCircle(0, 0, 130)
+  planeta = display.newCircle(0, 0, 120)
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 50
   planeta.name = 'marte'
@@ -362,7 +363,7 @@ function adicionarMarte()
   transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y})
   grupoPlanetaEstingue:insert(planeta)
 
-  estilingue = display.newRect(0, 0, 5, 10)
+  estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
   estilingue.isSensor = true
   physics.addBody(estilingue)
@@ -405,8 +406,8 @@ function criarOrbita(event)
   estilingue.x = planeta.x  + cos(rad(angulo)) * raio * 5
   estilingue.y = planeta.y  + sin(rad(angulo)) * raio * 5
 
-  local anguloEstilingue = atan2(planeta.y-estilingue.y, planeta.x-estilingue.x)
-  estilingue.rotation = deg(anguloEstilingue)
+  --local anguloEstilingue = atan2(planeta.y-estilingue.y, planeta.x-estilingue.x)
+  --estilingue.rotation = deg(anguloEstilingue)
 
   angulo = angulo + 1
 end
