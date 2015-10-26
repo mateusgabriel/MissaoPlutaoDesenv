@@ -5,7 +5,7 @@ local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
 --physics.setGravity( 0, 0 )
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -32,16 +32,18 @@ local estilingue
 local cometa
 local foguete
 local atvFoguete = false
+local atvOrbita = true
 local aplicaForca = - 60
 local grupoCombComet
-local grupoPlanetaEstingue
+local grupoPlanetaEstilingue
 local grupoFoguete
 local speed = 8000
-local speedPlanetas = 30000
-local speedEstrelas = 2
+local speedPlanetas = 20000
+local speedEstrelas = 3
 local distanciaTxt
 local combustivelTxt
 local pontosTxt
+local transitionPlanetas
 local carregarImgsJogo = {}
 local carregarFoguete = {}
 local carregarCometasAzuis = {}
@@ -66,6 +68,7 @@ local scrollEstrelas = {}
 local perderCombustivelPontosPorDistancia = {}
 local criarOrbita = {}
 local aumentarVelocidade = {}
+local remover = {}
 --------------------------------------------------------------------------------
 
 
@@ -103,6 +106,7 @@ function scene:show(event)
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     pcp = timer.performWithDelay( 1000, perderCombustivelPontosPorDistancia, 0 )
     apd = timer.performWithDelay( 800, adicionarPlanetaPorDistancia, 0)
+    --Runtime:addEventListener("enterFrame", adicionarPlanetaPorDistancia)
     background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
@@ -123,11 +127,12 @@ function scene:hide(event)
 
   if (phase == "will") then
     --background:addEventListener("touch", controlarFoguete)
+    --print('entrou')
     -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
   elseif (phase == "did") then
-    --gameOver()
+    --Runtime.removeEventListener("enterFrame", criarOrbita)
     -- Chama imediatamente quando a cena está fora da tela
   end
 end
@@ -146,7 +151,7 @@ function scene:destroy(event)
   Runtime:removeEventListener("enterFrame", criarOrbita)
   Runtime:removeEventListener("enterFrame", ativarFoguete)
   display.remove(grupoCombComet)
-  display.remove(grupoPlanetaEstingue)
+  display.remove(grupoPlanetaEstilingue)
   display.remove(teto1)
   display.remove(teto2)
   display.remove(teto3)
@@ -195,10 +200,10 @@ end
 function criarGrupos( )
   --grupoFoguete = display.newGroup( )
   grupoCombComet = display.newGroup()
-  grupoPlanetaEstingue = display.newGroup()
+  grupoPlanetaEstilingue = display.newGroup()
   --scene.view:insert(grupoFoguete)
   scene.view:insert(grupoCombComet)
-  scene.view:insert(grupoPlanetaEstingue)
+  scene.view:insert(grupoPlanetaEstilingue)
 end
 --------------------------------------------------------------------------------
 
@@ -250,7 +255,7 @@ function carregarImgsJogo( )
 
   chao = display.newImageRect("images/chao.png", display.contentWidth, display.contentHeight)
   chao.x = display.contentCenterX
-  chao.y = display.contentCenterY + 640
+  chao.y = display.contentCenterY + 645
   chao.name = 'chao'
   physics.addBody(chao, "static")
   scene.view:insert(chao)
@@ -267,6 +272,7 @@ function carregarFoguete()
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isSensor = true;
+  foguete.isFixedRotation = true
   physics.addBody(foguete, "dynamic")
   scene.view:insert(foguete)
   --grupoFoguete:insert(foguete)
@@ -283,7 +289,7 @@ function carregarCometasAzuis()
   cometa.y = math.random(25, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
-  cometa.isSensor = true
+  --cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   grupoCombComet:insert(cometa)
@@ -325,14 +331,14 @@ end
 -- Adicionar planeta por Distância
 --------------------------------------------------------------------------------
 function adicionarPlanetaPorDistancia()
-  if (distancia == 100) then
+  if (distancia == 150) then
     adicionarMarte()
-    --Runtime.removeEventListener("enterFrame", criarOrbita)
+    --if (atvOrbita == false) then
+      --Runtime:removeEventListener("enterFrame", criarOrbita)
+    --end
   end
   if (distancia == 250) then
     adicionarJupiter()
-    --Runtime.removeEventListener("enterFrame", criarOrbita)
-    --cac = timer.performWithDelay( 1000, carregarCometasAzuis, 20 )
   end
   if (distancia == 700) then
 
@@ -357,19 +363,27 @@ function adicionarMarte()
   planeta = display.newCircle(0, 0, 120)
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 50
-  planeta.name = 'marte'
+  planeta.name = 'planeta'
   planeta:setFillColor(200, 0, 0)
   planeta.isSensor = true
-  transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y})
-  grupoPlanetaEstingue:insert(planeta)
+  local teste1 = function(obj)
+    print("transition complete: " .. tostring(obj))
+    transition.cancel(transitionPlanetas)
+    --display.remove(planeta)
+    --display.remove(estilingue)
+    --Runtime:removeEventListener("enterFrame", criarOrbita)
+  end
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -200, y = planeta.y, onComplete = teste1})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
 
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
-  estilingue.isSensor = true
-  physics.addBody(estilingue)
-  grupoPlanetaEstingue:insert(estilingue)
+  estilingue.isFixedRotation = true
+  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  grupoPlanetaEstilingue:insert(estilingue)
 
-  Runtime:addEventListener( "enterFrame", criarOrbita )
+  Runtime:addEventListener("enterFrame", criarOrbita)
 end
 --------------------------------------------------------------------------------
 
@@ -378,23 +392,27 @@ end
 -- Adiciona planeta Júpiter
 --------------------------------------------------------------------------------
 function adicionarJupiter()
-  print('imprimiu jupiter')
-  planeta = display.newCircle(0, 0, 160)
+  planeta = display.newCircle(0, 0, 120)
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 60
-  planeta.name = 'jupiter'
-  planeta:setFillColor(1, 0.2, 0.2)
+  planeta.name = 'planeta'
+  planeta:setFillColor(0, 20, 0)
   planeta.isSensor = true
-  transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y})
-  grupoPlanetaEstingue:insert(planeta)
+  local teste1 = function(obj)
+    print("transition complete: " .. tostring(obj))
+    transition.cancel(transitionPlanetas)
+  end
+  transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = teste1})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
 
-  estilingue = display.newRect(0, 0, 5, 10)
+  estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
-  estilingue.isSensor = true
-  physics.addBody(estilingue)
-  grupoPlanetaEstingue:insert(estilingue)
+  estilingue.isFixedRotation = true
+  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  grupoPlanetaEstilingue:insert(estilingue)
 
-  Runtime:addEventListener( "enterFrame", criarOrbita )
+  Runtime:addEventListener("enterFrame", criarOrbita)
 end
 --------------------------------------------------------------------------------
 
@@ -408,8 +426,7 @@ function criarOrbita(event)
 
   --local anguloEstilingue = atan2(planeta.y-estilingue.y, planeta.x-estilingue.x)
   --estilingue.rotation = deg(anguloEstilingue)
-
-  angulo = angulo + 1
+  angulo = angulo + 3
 end
 --------------------------------------------------------------------------------
 
@@ -505,8 +522,10 @@ function onLocalCollision(event)
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
       event.object2:removeSelf()
     end
+    --if (event.object1.name == "foguete" and event.object2.name == "planeta") then
+      --event.object1:removeSelf()
+    --end
     if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
-      print('pegou estilingue')
       event.object2:removeSelf()
       aumentarVelocidade()
     end
@@ -530,7 +549,7 @@ end
 -- A cada 500km percorridos serão decrementados combustível e pontos do jogador
 --------------------------------------------------------------------------------
 function aumentarVelocidade()
-  speedEstrelas = speedEstrelas + 2
+  speedEstrelas = speedEstrelas + 3
   speed = speed + 2
   distancia = distancia + 15
 end
@@ -551,7 +570,7 @@ end
 -- Realiza cálculo de decremento de combustível e de pontos de acordo com a distância percorrida
 --------------------------------------------------------------------------------
   function perderCP ()
-    combustivel = combustivel - 100
+    combustivel = combustivel - 25
   end
 --------------------------------------------------------------------------------
 
@@ -562,7 +581,7 @@ end
 function perderCombustivelPontosPorDistancia()
   if (distancia == distanciaAux) then
     perderCP()
-    distanciaAux = distanciaAux +  150
+    distanciaAux = distanciaAux +  25
   end
 end
 --------------------------------------------------------------------------------
