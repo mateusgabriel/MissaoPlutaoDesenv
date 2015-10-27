@@ -221,7 +221,7 @@ end
 -- Configuração de transição entre cenas
 --------------------------------------------------------------------------------
 local configTransicaoJogoSubMenu = {
-	effect = "fade", time = 500
+	effect = "fade", time = 400
 }
 --------------------------------------------------------------------------------
 
@@ -233,8 +233,8 @@ function retornarJogo( )
   composer.removeScene("gameOver")
 	composer.gotoScene("jogo", configTransicaoJogoSubMenu)
   distancia = 0
-  distanciaAux = 150
-  combustivel = 500
+  distanciaAux = 25
+  combustivel = 100
   pontos = 0
 end
 --------------------------------------------------------------------------------

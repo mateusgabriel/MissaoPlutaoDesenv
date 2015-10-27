@@ -14,7 +14,7 @@ local cet
 local cce
 local cce2
 local toqueTxt
-local teste
+local plutaoLogo
 local carregarImgMenu = {}
 local carregarEfeitoToque = {}
 local carregarTextoToque = {}
@@ -140,18 +140,10 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  --options = { width = 72, height = 72, numFrames = 19}
-  --playerSheet = graphics.newImageSheet( "images/asteroid5.png", options )
-  --sequenceData = {
-  --  { name = "rotacao", start = 1, count = 19 , time = 5000, loopCount = 0}
-  --}
-  --teste = display.newSprite( playerSheet, sequenceData )
-  teste = display.newCircle(250, 250, 130);
-  teste.x = display.contentCenterX
-  teste.y = display.contentCenterY - 50
-  --teste.alpha = 0.75
-  --teste:play()
-  scene.view:insert(teste)
+  plutaoLogo = display.newImage("images/plutaoLogo.png")
+  plutaoLogo.x = display.contentCenterX
+  plutaoLogo.y = display.contentCenterY - 50
+  scene.view:insert(plutaoLogo)
 
   logomarca = display.newImage("images/logomarcaTeste.png")
   logomarca.x = display.contentCenterX

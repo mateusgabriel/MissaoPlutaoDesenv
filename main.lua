@@ -19,5 +19,5 @@ distancia = 0
 distanciaAux = 25
 combustivel = 100
 pontos = 0
-vidasAux = 5
-vidas = 0
+--vidasAux = 5
+--vidas = 0

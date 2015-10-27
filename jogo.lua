@@ -5,7 +5,7 @@ local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
 --physics.setGravity( 0, 0 )
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -13,62 +13,66 @@ physics.start()
 --------------------------------------------------------------------------------
 -- Declarar/Inicializar variáveis/funções
 --------------------------------------------------------------------------------
-local cac -- recebe a criação(carregar) de cometas
+local ccd -- recebe a criação(carregar) de cometas
+local cad
 local add -- recebe o incrementador(adicionar) da distância
 local pcp -- receber f decrementador de combustível e pontos
 local coc -- recebe a criação do objeto combustível
 local adp -- recebe o incrementador(adicionar) de pontos
 local adc -- recebe o incrementador(adicionar) do combustível
 local apd
+local cometa
+local foguete
+local planeta
+local estilingue
+local pontosTxt
+local grupoFoguete
+local grupoCombComet
+local grupoAsteroides
+local distanciaTxt
+local combustivelTxt
+local transitionPlanetas
+local grupoPlanetaEstilingue
 local cos = math.cos
 local sin = math.sin
 local rad = math.rad
 local atan2 = math.atan2
 local deg = math.deg
-local raio = 35 -- Distancia do estilingue do centro do planeta
+local raio = 42 -- Distancia do estilingue do centro do planeta
 local angulo = 90 -- Ponto de início da rotação
-local planeta
-local estilingue
-local cometa
-local foguete
 local atvFoguete = false
 local atvOrbita = true
 local aplicaForca = - 60
-local grupoCombComet
-local grupoPlanetaEstilingue
-local grupoFoguete
 local speed = 8000
 local speedPlanetas = 20000
 local speedEstrelas = 3
-local distanciaTxt
-local combustivelTxt
-local pontosTxt
-local transitionPlanetas
-local carregarImgsJogo = {}
-local carregarFoguete = {}
-local carregarCometasAzuis = {}
-local carregarObjCombustivel = {}
-local adicionarDistancia = {}
-local adicionarCombustivel = {}
-local adicionarPontos = {}
-local adicionarDisplayDCP = {}
-local adicionarPlanetaPorDistancia = {}
-local adicionarMarte = {}
-local adicionarJupiter = {}
-local adicionarSaturno = {}
-local adicionarUrano = {}
-local adicionarNeturno = {}
-local adicionarPlutao = {}
-local controlarFoguete = {}
-local criarGrupos = {}
 local gameOver = {}
 local perderCP = {}
 local ganharCP = {}
-local scrollEstrelas = {}
-local perderCombustivelPontosPorDistancia = {}
+local criarGrupos = {}
 local criarOrbita = {}
+local adicionarMarte = {}
+local adicionarUrano = {}
+local scrollEstrelas = {}
+local carregarFoguete = {}
+local adicionarPontos = {}
+local adicionarPlutao = {}
+local carregarImgsJogo = {}
+local adicionarJupiter = {}
+local adicionarSaturno = {}
+local adicionarNeturno = {}
+local controlarFoguete = {}
+local adicionarDistancia = {}
 local aumentarVelocidade = {}
-local remover = {}
+local adicionarDisplayDCP = {}
+local adicionarCombustivel = {}
+local carregarObjCombustivel = {}
+local adicionarPlanetaPorDistancia = {}
+local carregarAsteroidesPorDistancia = {}
+local carregarCometasPorDistancia = {}
+local perderCombustivelPontosPorDistancia = {}
+
+local verificarDistancias = {}
 --------------------------------------------------------------------------------
 
 
@@ -99,14 +103,14 @@ function scene:show(event)
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
-    coc = timer.performWithDelay( 5000, carregarObjCombustivel, 1 )
-    cac = timer.performWithDelay( 1600, carregarCometasAzuis, 10 )
+    adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
-    adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
-    pcp = timer.performWithDelay( 1000, perderCombustivelPontosPorDistancia, 0 )
-    apd = timer.performWithDelay( 800, adicionarPlanetaPorDistancia, 0)
-    --Runtime:addEventListener("enterFrame", adicionarPlanetaPorDistancia)
+    coc = timer.performWithDelay( 10000, carregarObjCombustivel, 1 )
+    apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
+    pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
+    ccd = timer.performWithDelay( 1600, carregarCometasPorDistancia, 15 )
+    cad = timer.performWithDelay( 1200, carregarAsteroidesPorDistancia, 0 )
     background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
@@ -145,26 +149,26 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-  Runtime:removeEventListener("collision", onLocalCollision)
   Runtime:removeEventListener("touch", controlarFoguete)
-  Runtime:removeEventListener("enterFrame", scrollEstrelas)
   Runtime:removeEventListener("enterFrame", criarOrbita)
   Runtime:removeEventListener("enterFrame", ativarFoguete)
-  display.remove(grupoCombComet)
-  display.remove(grupoPlanetaEstilingue)
+  Runtime:removeEventListener("enterFrame", scrollEstrelas)
+  Runtime:removeEventListener("collision", onLocalCollision)
+  display.remove(chao)
   display.remove(teto1)
   display.remove(teto2)
   display.remove(teto3)
   display.remove(foguete)
-  display.remove(chao)
   display.remove(background)
+  display.remove(grupoCombComet)
+  display.remove(grupoPlanetaEstilingue)
   if (coc) then
     timer.cancel(coc)
     coc = nil
   end
-  if (cac) then
-    timer.cancel(cac)
-    cac = nil
+  if (ccd) then
+    timer.cancel(ccd)
+    ccd = nil
   end
   if (add) then
     timer.cancel(add)
@@ -186,24 +190,14 @@ function scene:destroy(event)
     timer.cancel(apd)
     apd = nil
   end
+  if (cad) then
+    timer.cancel(cad)
+    cad = nil
+  end
   --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
   -- ex: remover obejtos display, save state, cancelar transições e etc
-end
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
--- Cria grupo(s) para unir elementos da tela
---------------------------------------------------------------------------------
-function criarGrupos( )
-  --grupoFoguete = display.newGroup( )
-  grupoCombComet = display.newGroup()
-  grupoPlanetaEstilingue = display.newGroup()
-  --scene.view:insert(grupoFoguete)
-  scene.view:insert(grupoCombComet)
-  scene.view:insert(grupoPlanetaEstilingue)
 end
 --------------------------------------------------------------------------------
 
@@ -281,23 +275,6 @@ end
 
 
 --------------------------------------------------------------------------------
--- Carregar foguete
---------------------------------------------------------------------------------
-function carregarCometasAzuis()
-  cometa = display.newImage("images/cometaAzul.png")
-  cometa.x = display.contentWidth + 150
-  cometa.y = math.random(25, display.contentHeight - 50 )
-  cometa.name = 'cometa'
-  cometa.isFixedRotation = true
-  --cometa.isSensor = true
-  physics.addBody(cometa, "dynamic")
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
-  grupoCombComet:insert(cometa)
-end
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
 -- Carregar objeto combustível
 --------------------------------------------------------------------------------
 function carregarObjCombustivel()
@@ -331,26 +308,26 @@ end
 -- Adicionar planeta por Distância
 --------------------------------------------------------------------------------
 function adicionarPlanetaPorDistancia()
-  if (distancia == 100) then
+  if (distancia == 30) then
     adicionarMarte()
-    --if (atvOrbita == false) then
-      --Runtime:removeEventListener("enterFrame", criarOrbita)
-    --end
   end
-  if (distancia == 250) then
+  --if (distancia > 40 and distancia < 60) then
+    --ccd = timer.performWithDelay( 1600, carregarAsteroidesPorDistancia, 15 )
+  --end
+  if (distancia == 60) then
     adicionarJupiter()
   end
-  if (distancia == 700) then
-
+  if (distancia == 90) then
+    adicionarSaturno()
   end
-  if (distancia == 900) then
-
+  if (distancia == 120) then
+    adicionarUrano()
   end
-  if (distancia == 1100) then
-
+  if (distancia == 150) then
+    adicionarNeturno()
   end
-  if (distancia == 1300) then
-
+  if (distancia == 180) then
+    adicionarPlutao()
   end
 end
 --------------------------------------------------------------------------------
@@ -360,20 +337,14 @@ end
 -- Adiciona planeta Marte
 --------------------------------------------------------------------------------
 function adicionarMarte()
-  planeta = display.newCircle(0, 0, 120)
+  planeta = display.newImage("images/marte.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 50
-  planeta.name = 'planeta'
-  planeta:setFillColor(200, 0, 0)
-  planeta.isSensor = true
-  local teste1 = function(obj)
-    print("transition complete: " .. tostring(obj))
+  planeta.y = display.contentCenterY + 30
+  local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
-    --display.remove(planeta)
-    --display.remove(estilingue)
-    --Runtime:removeEventListener("enterFrame", criarOrbita)
+    Runtime:removeEventListener("enterFrame", criarOrbita)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -200, y = planeta.y, onComplete = teste1})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
@@ -392,17 +363,14 @@ end
 -- Adiciona planeta Júpiter
 --------------------------------------------------------------------------------
 function adicionarJupiter()
-  planeta = display.newCircle(0, 0, 120)
+  planeta = display.newImage("images/jupiter.png")
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 60
-  planeta.name = 'planeta'
-  planeta:setFillColor(0, 20, 0)
-  planeta.isSensor = true
-  local teste1 = function(obj)
-    print("transition complete: " .. tostring(obj))
+  local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
+    Runtime:removeEventListener("enterFrame", criarOrbita)
   end
-  transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = teste1})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
@@ -418,12 +386,94 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Adiciona planeta Saturno
+--------------------------------------------------------------------------------
+function adicionarSaturno()
+  planeta = display.newImage("images/saturno.png")
+  planeta.x = display.contentWidth + 150
+  planeta.y = display.contentCenterY + 30
+  local cancelaOrbita = function(obj)
+    transition.cancel(transitionPlanetas)
+  end
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
+
+  --Runtime:addEventListener("enterFrame", criarOrbita)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adiciona planeta Urano
+--------------------------------------------------------------------------------
+function adicionarUrano()
+  planeta = display.newImage("images/urano.png")
+  planeta.x = display.contentWidth + 150
+  planeta.y = display.contentCenterY + 30
+  local cancelaOrbita = function(obj)
+    transition.cancel(transitionPlanetas)
+  end
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
+
+  --Runtime:addEventListener("enterFrame", criarOrbita)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adiciona planeta Neturno
+--------------------------------------------------------------------------------
+function adicionarNeturno()
+  planeta = display.newImage("images/neturno.png")
+  planeta.x = display.contentWidth + 150
+  planeta.y = display.contentCenterY + 30
+  local cancelaOrbita = function(obj)
+    transition.cancel(transitionPlanetas)
+    Runtime:removeEventListener("enterFrame", criarOrbita)
+  end
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
+
+  estilingue = display.newImage("images/estilingue1.png")
+  estilingue.name = 'estilingue'
+  estilingue.isFixedRotation = true
+  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  grupoPlanetaEstilingue:insert(estilingue)
+
+  Runtime:addEventListener("enterFrame", criarOrbita)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adiciona planeta Neturno
+--------------------------------------------------------------------------------
+function adicionarPlutao()
+  planeta = display.newImage("images/plutao.png")
+  planeta.x = display.contentWidth + 150
+  planeta.y = display.contentCenterY + 30
+  local cancelaOrbita = function(obj)
+    transition.cancel(transitionPlanetas)
+  end
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  --physics.addBody(planeta, "dynamic")
+  grupoPlanetaEstilingue:insert(planeta)
+
+  --Runtime:addEventListener("enterFrame", criarOrbita)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
 -- Criar/Configurar órbita
 --------------------------------------------------------------------------------
 function criarOrbita(event)
   estilingue.x = planeta.x  + cos(rad(angulo)) * raio * 5
   estilingue.y = planeta.y  + sin(rad(angulo)) * raio * 5
-
   --local anguloEstilingue = atan2(planeta.y-estilingue.y, planeta.x-estilingue.x)
   --estilingue.rotation = deg(anguloEstilingue)
   angulo = angulo + 3
@@ -432,10 +482,63 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Carregar cometas pela distância
+--------------------------------------------------------------------------------
+function carregarCometasPorDistancia()
+  if (distancia > 0 and distancia < 30) then
+    cometa = display.newImage("images/cometaAzul.png")
+    cometa.x = display.contentWidth + 150
+    cometa.y = math.random(25, display.contentHeight - 50 )
+    cometa.name = 'cometa'
+    cometa.isFixedRotation = true
+    cometa.isSensor = true
+    physics.addBody(cometa, "dynamic")
+    transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+    grupoCombComet:insert(cometa)
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carregar asteroides pela distância
+--------------------------------------------------------------------------------
+function carregarAsteroidesPorDistancia()
+  local contador = 0
+  local contadorAux = 15
+  if (distancia > 43 and distancia < 60) then
+    if (contador ~= contadorAux) then
+      print('passou aqui!')
+      local options = { width = 64, height = 64, numFrames = 30}
+      local playerSheet = graphics.newImageSheet( "images/asteroide.png", options )
+      local sequenceData = {
+        { name = "rotacao", start = 1, count = 30 , time = 1000, loopCount = 0}
+      }
+      asteroide = display.newSprite( playerSheet, sequenceData )
+      asteroide.x = display.contentWidth + 150
+      asteroide.y = math.random(25, display.contentHeight - 50 )
+      asteroide.name = 'cometa'
+      asteroide.isSensor = true
+      asteroide.isFixedRotation = true
+      physics.addBody( asteroide, "dynamic" )
+      asteroide:play()
+      grupoAsteroides:insert(asteroide)
+      transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+
+      contador = contador + 1
+    else
+      --
+    end
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
 -- Adicionar distância percorrida
 --------------------------------------------------------------------------------
 function adicionarDistancia()
-    distancia = distancia + 5
+    distancia = distancia + 1
     distanciaTxt.text = string.format("Distância %d km", distancia)
 end
 --------------------------------------------------------------------------------
@@ -527,7 +630,12 @@ function onLocalCollision(event)
     --end
     if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
       event.object2:removeSelf()
-      aumentarVelocidade()
+      Runtime:removeEventListener("enterFrame", criarOrbita)
+      --aumentarVelocidade()
+    elseif (event.object1.name == "estilingue" and event.object2.name == "foguete") then
+      event.object1:removeSelf()
+      Runtime:removeEventListener("enterFrame", criarOrbita)
+      --aumentarVelocidade()
     end
     if (event.object1.name == "teto" and event.object2.name == "combustivel") then
       event.object2:removeSelf()
@@ -569,9 +677,9 @@ end
 --------------------------------------------------------------------------------
 -- Realiza cálculo de decremento de combustível e de pontos de acordo com a distância percorrida
 --------------------------------------------------------------------------------
-  function perderCP ()
-    combustivel = combustivel - 25
-  end
+function perderCP ()
+  combustivel = combustivel - 25
+end
 --------------------------------------------------------------------------------
 
 
@@ -581,7 +689,7 @@ end
 function perderCombustivelPontosPorDistancia()
   if (distancia == distanciaAux) then
     perderCP()
-    distanciaAux = distanciaAux +  25
+    distanciaAux = distanciaAux + 25
   end
 end
 --------------------------------------------------------------------------------
@@ -604,6 +712,22 @@ function scrollEstrelas (event)
   if (estrelas3.x + estrelas3.contentWidth) < 0 then
     estrelas3:translate( display.contentWidth * 3, 0 )
   end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Cria grupo(s) para unir elementos da tela
+--------------------------------------------------------------------------------
+function criarGrupos( )
+  --grupoFoguete = display.newGroup( )
+  grupoCombComet = display.newGroup()
+  grupoAsteroides = display.newGroup()
+  grupoPlanetaEstilingue = display.newGroup()
+  --scene.view:insert(grupoFoguete)
+  scene.view:insert(grupoCombComet)
+  scene.view:insert(grupoPlanetaEstilingue)
+  scene.view:insert(grupoAsteroides)
 end
 --------------------------------------------------------------------------------
 
