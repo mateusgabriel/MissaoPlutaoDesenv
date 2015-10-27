@@ -149,7 +149,7 @@ function carregarImgsMenu( )
   teste = display.newCircle(250, 250, 130);
   teste.x = display.contentCenterX
   teste.y = display.contentCenterY - 50
-  teste.alpha = 0.75
+  --teste.alpha = 0.75
   --teste:play()
   scene.view:insert(teste)
 

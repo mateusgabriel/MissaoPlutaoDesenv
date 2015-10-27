@@ -5,7 +5,7 @@ local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
 --physics.setGravity( 0, 0 )
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -331,7 +331,7 @@ end
 -- Adicionar planeta por Distância
 --------------------------------------------------------------------------------
 function adicionarPlanetaPorDistancia()
-  if (distancia == 150) then
+  if (distancia == 100) then
     adicionarMarte()
     --if (atvOrbita == false) then
       --Runtime:removeEventListener("enterFrame", criarOrbita)
