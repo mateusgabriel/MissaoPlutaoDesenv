@@ -505,7 +505,7 @@ end
 function carregarCometasAsteroidesPorDistancia()
   local contador = 0
   local contadorAux = 15
-  while (contador ~= contadorAux) do
+  if (contador ~= contadorAux) then
     if (distancia > 43 and distancia < 60) then
       adicionarAsteroidesMarrons()
       contador = contador + 1
@@ -521,6 +521,8 @@ function carregarCometasAsteroidesPorDistancia()
     elseif (distancia > 163 and distancia < 180) then
       adicionarAsteroidesCinzas()
       contador = contador + 1
+    else
+      print('saindo de carregarCometasAsteroidesPorDistancia()')
     end
   end
 end
