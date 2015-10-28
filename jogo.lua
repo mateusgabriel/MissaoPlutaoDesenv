@@ -67,12 +67,15 @@ local aumentarVelocidade = {}
 local adicionarDisplayDCP = {}
 local adicionarCombustivel = {}
 local carregarObjCombustivel = {}
+local adicionarCometasRojoes = {}
+local adicionarCometasBrancos = {}
+local adicionarAsteroidesCinzas ={}
+local adicionarCometasVermelhos = {}
+local adicionarAsteroidesMarrons = {}
 local adicionarPlanetaPorDistancia = {}
-local carregarAsteroidesPorDistancia = {}
-local carregarCometasPorDistancia = {}
+local carregarCometasIniciaisPorDistancia = {}
 local perderCombustivelPontosPorDistancia = {}
-
-local verificarDistancias = {}
+local carregarCometasAsteroidesPorDistancia = {}
 --------------------------------------------------------------------------------
 
 
@@ -109,8 +112,8 @@ function scene:show(event)
     coc = timer.performWithDelay( 10000, carregarObjCombustivel, 1 )
     apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
-    ccd = timer.performWithDelay( 1600, carregarCometasPorDistancia, 15 )
-    cad = timer.performWithDelay( 1200, carregarAsteroidesPorDistancia, 0 )
+    ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
+    cad = timer.performWithDelay( 1200, carregarCometasAsteroidesPorDistancia, 0 )
     background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
@@ -398,8 +401,6 @@ function adicionarSaturno()
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
-
-  --Runtime:addEventListener("enterFrame", criarOrbita)
 end
 --------------------------------------------------------------------------------
 
@@ -417,8 +418,6 @@ function adicionarUrano()
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
-
-  --Runtime:addEventListener("enterFrame", criarOrbita)
 end
 --------------------------------------------------------------------------------
 
@@ -484,7 +483,7 @@ end
 --------------------------------------------------------------------------------
 -- Carregar cometas pela distância
 --------------------------------------------------------------------------------
-function carregarCometasPorDistancia()
+function carregarCometasIniciaisPorDistancia()
   if (distancia > 0 and distancia < 30) then
     cometa = display.newImage("images/cometaAzul.png")
     cometa.x = display.contentWidth + 150
@@ -503,33 +502,124 @@ end
 --------------------------------------------------------------------------------
 -- Carregar asteroides pela distância
 --------------------------------------------------------------------------------
-function carregarAsteroidesPorDistancia()
+function carregarCometasAsteroidesPorDistancia()
   local contador = 0
   local contadorAux = 15
-  if (distancia > 43 and distancia < 60) then
-    if (contador ~= contadorAux) then
-      print('passou aqui!')
-      local options = { width = 64, height = 64, numFrames = 30}
-      local playerSheet = graphics.newImageSheet( "images/asteroide.png", options )
-      local sequenceData = {
-        { name = "rotacao", start = 1, count = 30 , time = 1000, loopCount = 0}
-      }
-      asteroide = display.newSprite( playerSheet, sequenceData )
-      asteroide.x = display.contentWidth + 150
-      asteroide.y = math.random(25, display.contentHeight - 50 )
-      asteroide.name = 'cometa'
-      asteroide.isSensor = true
-      asteroide.isFixedRotation = true
-      physics.addBody( asteroide, "dynamic" )
-      asteroide:play()
-      grupoAsteroides:insert(asteroide)
-      transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
-
+  while (contador ~= contadorAux) do
+    if (distancia > 43 and distancia < 60) then
+      adicionarAsteroidesMarrons()
       contador = contador + 1
-    else
-      --
+    elseif (distancia > 73 and distancia < 90) then
+      adicionarCometasVermelhos()
+      contador = contador + 1
+    elseif (distancia > 103 and distancia < 120) then
+      adicionarCometasBrancos()
+      contador = contador + 1
+    elseif (distancia > 133 and distancia < 150) then
+      adicionarCometasRojoes()
+      contador = contador + 1
+    elseif (distancia > 163 and distancia < 180) then
+      adicionarAsteroidesCinzas()
+      contador = contador + 1
     end
   end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar asteroides marrons (Marte -> Júpiter)
+--------------------------------------------------------------------------------
+function adicionarAsteroidesMarrons()
+  local options = { width = 64, height = 64, numFrames = 30}
+  local playerSheet = graphics.newImageSheet( "images/asteroideMarrom.png", options )
+  local sequenceData = {
+    { name = "rotacao", start = 1, count = 30 , time = 1000, loopCount = 0}
+  }
+  asteroide = display.newSprite( playerSheet, sequenceData )
+  asteroide.x = display.contentWidth + 150
+  asteroide.y = math.random(25, display.contentHeight - 50 )
+  asteroide.name = 'cometa'
+  asteroide.isSensor = true
+  asteroide.isFixedRotation = true
+  physics.addBody( asteroide, "dynamic" )
+  asteroide:play()
+  grupoAsteroides:insert(asteroide)
+  transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar cometas vermelhos (Júpiter -> Saturno)
+--------------------------------------------------------------------------------
+function adicionarCometasVermelhos()
+  cometa = display.newImage("images/cometaVermelho.png")
+  cometa.x = display.contentWidth + 150
+  cometa.y = math.random(25, display.contentHeight - 50 )
+  cometa.name = 'cometa'
+  cometa.isFixedRotation = true
+  cometa.isSensor = true
+  physics.addBody(cometa, "dynamic")
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  grupoCombComet:insert(cometa)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar cometas brancos (Saturno -> Urano)
+--------------------------------------------------------------------------------
+function adicionarCometasBrancos()
+  cometa = display.newImage("images/cometaBranco.png")
+  cometa.x = display.contentWidth + 150
+  cometa.y = math.random(25, display.contentHeight - 50 )
+  cometa.name = 'cometa'
+  cometa.isFixedRotation = true
+  cometa.isSensor = true
+  physics.addBody(cometa, "dynamic")
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  grupoCombComet:insert(cometa)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar cometas rojões (Urano -> Neturno)
+--------------------------------------------------------------------------------
+function adicionarCometasRojoes()
+  cometa = display.newImage("images/cometaRojao.png")
+  cometa.x = display.contentWidth + 150
+  cometa.y = math.random(25, display.contentHeight - 50 )
+  cometa.name = 'cometa'
+  cometa.isFixedRotation = true
+  cometa.isSensor = true
+  physics.addBody(cometa, "dynamic")
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  grupoCombComet:insert(cometa)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Adicionar asteróides cinzas (Neturno -> Plutão)
+--------------------------------------------------------------------------------
+function adicionarAsteroidesCinzas()
+  local options = { width = 64, height = 64, numFrames = 64}
+  local playerSheet = graphics.newImageSheet( "images/asteroideCinza.png", options )
+  local sequenceData = {
+    { name = "rotacao", start = 1, count = 64 , time = 1000, loopCount = 0}
+  }
+  asteroide = display.newSprite( playerSheet, sequenceData )
+  asteroide.x = display.contentWidth + 150
+  asteroide.y = math.random(25, display.contentHeight - 50 )
+  asteroide.name = 'cometa'
+  asteroide.isSensor = true
+  asteroide.isFixedRotation = true
+  physics.addBody( asteroide, "dynamic" )
+  asteroide:play()
+  grupoAsteroides:insert(asteroide)
+  transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
 end
 --------------------------------------------------------------------------------
 
