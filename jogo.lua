@@ -66,8 +66,8 @@ local adicionarDistancia = {}
 local aumentarVelocidade = {}
 local adicionarDisplayDCP = {}
 local adicionarCombustivel = {}
+local adicionarCometasAnis = {}
 local carregarObjCombustivel = {}
-local adicionarCometasRojoes = {}
 local adicionarCometasBrancos = {}
 local adicionarAsteroidesCinzas ={}
 local adicionarCometasVermelhos = {}
@@ -133,8 +133,6 @@ function scene:hide(event)
   local phase = event.phase
 
   if (phase == "will") then
-    --background:addEventListener("touch", controlarFoguete)
-    --print('entrou')
     -- Chama quando a cena está na tela
     -- Inserir código para "pausar" a cena
     -- Ex: stop timers, stop animation, stop audio, etc
@@ -229,21 +227,21 @@ function carregarImgsJogo( )
   estrelas3.y = display.contentCenterY
   scene.view:insert(estrelas3)
 
-  teto1 = display.newImage("images/metero.png")
+  teto1 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto1.x = 0
   teto1.y = -110
   teto1.name = 'teto'
   physics.addBody(teto1, "static")
   scene.view:insert(teto1)
 
-  teto2 = display.newImage("images/metero.png")
+  teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto2.x = 410
   teto2.y = -110
   teto2.name = 'teto'
   physics.addBody(teto2, "static")
   scene.view:insert(teto2)
 
-  teto3 = display.newImage("images/metero.png")
+  teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto3.x = 1900
   teto3.y = -110
   teto3.name = 'teto'
@@ -314,13 +312,10 @@ function adicionarPlanetaPorDistancia()
   if (distancia == 30) then
     adicionarMarte()
   end
-  --if (distancia > 40 and distancia < 60) then
-    --ccd = timer.performWithDelay( 1600, carregarAsteroidesPorDistancia, 15 )
-  --end
   if (distancia == 60) then
     adicionarJupiter()
   end
-  if (distancia == 90) then
+  if (distancia == 100) then
     adicionarSaturno()
   end
   if (distancia == 120) then
@@ -398,7 +393,7 @@ function adicionarSaturno()
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -500, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 end
@@ -461,7 +456,6 @@ function adicionarPlutao()
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
-
   --Runtime:addEventListener("enterFrame", criarOrbita)
 end
 --------------------------------------------------------------------------------
@@ -492,8 +486,8 @@ function carregarCometasIniciaisPorDistancia()
     cometa.isFixedRotation = true
     cometa.isSensor = true
     physics.addBody(cometa, "dynamic")
-    transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
     grupoCombComet:insert(cometa)
+    transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   end
 end
 --------------------------------------------------------------------------------
@@ -504,7 +498,7 @@ end
 --------------------------------------------------------------------------------
 function carregarCometasAsteroidesPorDistancia()
   local contador = 0
-  local contadorAux = 15
+  local contadorAux = 13
   if (contador ~= contadorAux) then
     if (distancia > 43 and distancia < 60) then
       adicionarAsteroidesMarrons()
@@ -512,13 +506,13 @@ function carregarCometasAsteroidesPorDistancia()
     elseif (distancia > 73 and distancia < 90) then
       adicionarCometasVermelhos()
       contador = contador + 1
-    elseif (distancia > 103 and distancia < 120) then
+    elseif (distancia > 120 and distancia < 140) then
       adicionarCometasBrancos()
       contador = contador + 1
-    elseif (distancia > 133 and distancia < 150) then
+    elseif (distancia > 143 and distancia < 170) then
       adicionarCometasRojoes()
       contador = contador + 1
-    elseif (distancia > 163 and distancia < 180) then
+    elseif (distancia > 173 and distancia < 190) then
       adicionarAsteroidesCinzas()
       contador = contador + 1
     else
@@ -547,7 +541,7 @@ function adicionarAsteroidesMarrons()
   physics.addBody( asteroide, "dynamic" )
   asteroide:play()
   grupoAsteroides:insert(asteroide)
-  transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
 end
 --------------------------------------------------------------------------------
 
@@ -563,8 +557,8 @@ function adicionarCometasVermelhos()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   grupoCombComet:insert(cometa)
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
 
@@ -580,8 +574,8 @@ function adicionarCometasBrancos()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   grupoCombComet:insert(cometa)
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
 
@@ -589,16 +583,16 @@ end
 --------------------------------------------------------------------------------
 -- Adicionar cometas rojões (Urano -> Neturno)
 --------------------------------------------------------------------------------
-function adicionarCometasRojoes()
-  cometa = display.newImage("images/cometaRojao.png")
+function adicionarCometasAnis()
+  cometa = display.newImage("images/cometaAnil.png")
   cometa.x = display.contentWidth + 150
   cometa.y = math.random(25, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
   grupoCombComet:insert(cometa)
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
 
@@ -621,7 +615,7 @@ function adicionarAsteroidesCinzas()
   physics.addBody( asteroide, "dynamic" )
   asteroide:play()
   grupoAsteroides:insert(asteroide)
-  transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
 end
 --------------------------------------------------------------------------------
 
@@ -696,22 +690,16 @@ function onLocalCollision(event)
 		    event.object2:removeSelf()
         ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
-		    --event.object1:removeSelf()
         gameOver()
     elseif (event.object1.name == "cometa" and event.object2.name == "foguete") then
-        --event.object2:removeSelf()
         gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "teto") then
-		    --event.object1:removeSelf()
         gameOver()
     elseif (event.object1.name == "teto" and event.object2.name == "foguete") then
-        --event.object2:removeSelf()
         gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
-		    --event.object1:removeSelf()
         gameOver()
     elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
-		    --event.object2:removeSelf()
         gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then

@@ -143,12 +143,6 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  enredo = display.newImageRect("images/enredo.png", display.contentWidth, display.contentHeight)
-  enredo.x = display.contentCenterX
-  enredo.y = display.contentCenterY + 130
-  --enredo.alpha = 0
-  scene.view:insert(enredo)
-
   btComecarJogo = display.newImage("images/botao.png")
   btComecarJogo.x = display.contentCenterX + 235
   btComecarJogo.y = display.contentCenterY + 250

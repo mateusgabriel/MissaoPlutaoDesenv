@@ -140,14 +140,9 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  plutaoLogo = display.newImage("images/plutaoLogo.png")
-  plutaoLogo.x = display.contentCenterX
-  plutaoLogo.y = display.contentCenterY - 50
-  scene.view:insert(plutaoLogo)
-
-  logomarca = display.newImage("images/logomarcaTeste.png")
+  logomarca = display.newImage("images/logomarca.png", display.contentWidth, display.contentHeight)
   logomarca.x = display.contentCenterX
-  logomarca.y = display.contentCenterY + 140
+  logomarca.y = display.contentCenterY
   scene.view:insert(logomarca)
 end
 --------------------------------------------------------------------------------
