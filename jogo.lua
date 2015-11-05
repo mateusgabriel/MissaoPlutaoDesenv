@@ -31,6 +31,7 @@ local grupoCombComet
 local grupoAsteroides
 local distanciaTxt
 local combustivelTxt
+local transitionCometas
 local transitionPlanetas
 local grupoPlanetaEstilingue
 local cos = math.cos
@@ -114,6 +115,7 @@ function scene:show(event)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
     ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
     cad = timer.performWithDelay( 1200, carregarCometasAsteroidesPorDistancia, 0 )
+    --cad = timer.performWithDelay( 43000, adicionarAsteroidesMarrons, 15)
     background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
@@ -162,6 +164,7 @@ function scene:destroy(event)
   display.remove(foguete)
   display.remove(background)
   display.remove(grupoCombComet)
+  display.remove(grupoAsteroides)
   display.remove(grupoPlanetaEstilingue)
   if (coc) then
     timer.cancel(coc)
@@ -318,13 +321,13 @@ function adicionarPlanetaPorDistancia()
   if (distancia == 100) then
     adicionarSaturno()
   end
-  if (distancia == 120) then
+  if (distancia == 140) then
     adicionarUrano()
   end
-  if (distancia == 150) then
+  if (distancia == 180) then
     adicionarNeturno()
   end
-  if (distancia == 180) then
+  if (distancia == 220) then
     adicionarPlutao()
   end
 end
@@ -388,12 +391,12 @@ end
 --------------------------------------------------------------------------------
 function adicionarSaturno()
   planeta = display.newImage("images/saturno.png")
-  planeta.x = display.contentWidth + 150
+  planeta.x = display.contentWidth + 230
   planeta.y = display.contentCenterY + 30
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -500, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 end
@@ -503,18 +506,23 @@ function carregarCometasAsteroidesPorDistancia()
     if (distancia > 43 and distancia < 60) then
       adicionarAsteroidesMarrons()
       contador = contador + 1
-    elseif (distancia > 73 and distancia < 90) then
+      print('asteroide marrom')
+    elseif (distancia > 73 and distancia < 100) then
       adicionarCometasVermelhos()
       contador = contador + 1
-    elseif (distancia > 120 and distancia < 140) then
+      print('asteroide vermelho')
+    elseif (distancia > 113 and distancia < 140) then
       adicionarCometasBrancos()
       contador = contador + 1
-    elseif (distancia > 143 and distancia < 170) then
-      adicionarCometasRojoes()
+      print('asteroide branco')
+    elseif (distancia > 153 and distancia < 180) then
+      adicionarCometasAnis()
       contador = contador + 1
-    elseif (distancia > 173 and distancia < 190) then
+      print('asteroide anil')
+    elseif (distancia > 193 and distancia < 220) then
       adicionarAsteroidesCinzas()
       contador = contador + 1
+      print('asteroide cinza')
     else
       print('saindo de carregarCometasAsteroidesPorDistancia()')
     end
@@ -552,7 +560,7 @@ end
 function adicionarCometasVermelhos()
   cometa = display.newImage("images/cometaVermelho.png")
   cometa.x = display.contentWidth + 150
-  cometa.y = math.random(25, display.contentHeight - 50 )
+  cometa.y = math.random(20, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   cometa.isSensor = true
