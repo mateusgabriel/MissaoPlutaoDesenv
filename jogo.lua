@@ -5,7 +5,7 @@ local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
 --physics.setGravity( 0, 0 )
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -23,8 +23,8 @@ local adc -- recebe o incrementador(adicionar) do combustível
 local apd
 local cometa
 local foguete
-local planeta
-local estilingue
+--local planeta
+--local estilingue
 local pontosTxt
 local grupoFoguete
 local grupoCombComet
@@ -352,7 +352,7 @@ function adicionarMarte()
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
-  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  physics.addBody(estilingue, "dynamic", {density=1.0, friction=0.3, bounce=0.2})
   grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
@@ -378,7 +378,7 @@ function adicionarJupiter()
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
-  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  physics.addBody(estilingue, "dynamic")
   grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
@@ -391,7 +391,7 @@ end
 --------------------------------------------------------------------------------
 function adicionarSaturno()
   planeta = display.newImage("images/saturno.png")
-  planeta.x = display.contentWidth + 230
+  planeta.x = display.contentWidth + 250
   planeta.y = display.contentCenterY + 30
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
@@ -438,7 +438,7 @@ function adicionarNeturno()
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
-  physics.addBody(estilingue, {density=1.0, friction=0.3, bounce=0.2})
+  physics.addBody(estilingue, "dynamic")
   grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
@@ -500,33 +500,33 @@ end
 -- Carregar asteroides pela distância
 --------------------------------------------------------------------------------
 function carregarCometasAsteroidesPorDistancia()
-  local contador = 0
-  local contadorAux = 13
-  if (contador ~= contadorAux) then
-    if (distancia > 43 and distancia < 60) then
+  --local contador = 0
+  --local contadorAux = 13
+  --if (contador ~= contadorAux) then
+    if (distancia > 43 and distancia < 55) then
       adicionarAsteroidesMarrons()
-      contador = contador + 1
+      --contador = contador + 1
       print('asteroide marrom')
-    elseif (distancia > 73 and distancia < 100) then
+    elseif (distancia > 73 and distancia < 95) then
       adicionarCometasVermelhos()
-      contador = contador + 1
+      --contador = contador + 1
       print('asteroide vermelho')
-    elseif (distancia > 113 and distancia < 140) then
+    elseif (distancia > 113 and distancia < 135) then
       adicionarCometasBrancos()
-      contador = contador + 1
+      --contador = contador + 1
       print('asteroide branco')
-    elseif (distancia > 153 and distancia < 180) then
+    elseif (distancia > 153 and distancia < 175) then
       adicionarCometasAnis()
-      contador = contador + 1
+      --contador = contador + 1
       print('asteroide anil')
     elseif (distancia > 193 and distancia < 220) then
       adicionarAsteroidesCinzas()
-      contador = contador + 1
+      --contador = contador + 1
       print('asteroide cinza')
     else
       print('saindo de carregarCometasAsteroidesPorDistancia()')
     end
-  end
+  --end
 end
 --------------------------------------------------------------------------------
 
@@ -565,7 +565,7 @@ function adicionarCometasVermelhos()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  grupoCombComet:insert(cometa)
+  scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
@@ -582,7 +582,7 @@ function adicionarCometasBrancos()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  grupoCombComet:insert(cometa)
+  scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
@@ -599,7 +599,7 @@ function adicionarCometasAnis()
   cometa.isFixedRotation = true
   cometa.isSensor = true
   physics.addBody(cometa, "dynamic")
-  grupoCombComet:insert(cometa)
+  scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
 --------------------------------------------------------------------------------
@@ -676,14 +676,11 @@ function controlarFoguete(event)
   -- Ao clicar na tela é aplicada força na nave
   if (event.phase == "began") then
     atvFoguete = true
-    --foguete.enterFrame = ativarFoguete
-    --Runtime:addEventListener("enterFrame", foguete)
   end
   -- No fim do clique a força aplicada a nave é removida
   if (event.phase == "ended") then
     atvFoguete = false
     aplicaForca = - 50
-      --Runtime:removeEventListener("enterFrame", foguete)
   end
 end
 --------------------------------------------------------------------------------
@@ -717,12 +714,8 @@ function onLocalCollision(event)
       --event.object1:removeSelf()
     --end
     if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
+      Runtime:removeEventListener("enterFrame", criarOrbita)
       event.object2:removeSelf()
-      Runtime:removeEventListener("enterFrame", criarOrbita)
-      --aumentarVelocidade()
-    elseif (event.object1.name == "estilingue" and event.object2.name == "foguete") then
-      event.object1:removeSelf()
-      Runtime:removeEventListener("enterFrame", criarOrbita)
       --aumentarVelocidade()
     end
     if (event.object1.name == "teto" and event.object2.name == "combustivel") then

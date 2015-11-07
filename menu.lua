@@ -48,7 +48,6 @@ function scene:show(event)
   local phase = event.phase
 
   composer.removeScene("submenu")
-  composer.removeScene("creditos")
 
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
