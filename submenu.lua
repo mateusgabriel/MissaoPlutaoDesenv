@@ -162,6 +162,21 @@ function carregarImgsMenu( )
   creditosTxt.x = display.contentCenterX - 242
   creditosTxt.y = display.contentCenterY + 250
   scene.view:insert(creditosTxt)
+
+  escolhaNivelTxt = display.newImage("images/escolhaNivel.png")
+  escolhaNivelTxt.x = display.contentCenterX
+  escolhaNivelTxt.y = display.contentCenterY - 200
+  scene.view:insert(escolhaNivelTxt)
+
+  nivelFacil = display.newImage("images/nivelFacil.png")
+  nivelFacil.x = display.contentCenterX - 180
+  nivelFacil.y = display.contentCenterY + 20
+  scene.view:insert(nivelFacil)
+
+  nivelDificil = display.newImage("images/nivelFacil.png")
+  nivelDificil.x = display.contentCenterX + 180
+  nivelDificil.y = display.contentCenterY + 20
+  scene.view:insert(nivelDificil)
 end
 --------------------------------------------------------------------------------
 
@@ -203,6 +218,18 @@ function carregarEnredo()
 end
 --------------------------------------------------------------------------------
 
+
+--------------------------------------------------------------------------------
+-- Função para sair do jogo
+--------------------------------------------------------------------------------
+function fecharJogo()
+  if (system.getInfo("platformName") == "Android") then
+    native.requestExit()
+  else
+    os.exit()
+  end
+end
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas

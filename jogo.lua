@@ -503,23 +503,23 @@ function carregarCometasAsteroidesPorDistancia()
   --local contador = 0
   --local contadorAux = 13
   --if (contador ~= contadorAux) then
-    if (distancia > 43 and distancia < 55) then
+    if (distancia > 43 and distancia < 57) then
       adicionarAsteroidesMarrons()
       --contador = contador + 1
       print('asteroide marrom')
-    elseif (distancia > 73 and distancia < 95) then
+    elseif (distancia > 73 and distancia < 97) then
       adicionarCometasVermelhos()
       --contador = contador + 1
       print('asteroide vermelho')
-    elseif (distancia > 113 and distancia < 135) then
+    elseif (distancia > 113 and distancia < 137) then
       adicionarCometasBrancos()
       --contador = contador + 1
       print('asteroide branco')
-    elseif (distancia > 153 and distancia < 175) then
+    elseif (distancia > 153 and distancia < 177) then
       adicionarCometasAnis()
       --contador = contador + 1
       print('asteroide anil')
-    elseif (distancia > 193 and distancia < 220) then
+    elseif (distancia > 193 and distancia < 227) then
       adicionarAsteroidesCinzas()
       --contador = contador + 1
       print('asteroide cinza')
