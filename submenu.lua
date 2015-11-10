@@ -173,7 +173,7 @@ function carregarImgsMenu( )
   nivelFacil.y = display.contentCenterY + 20
   scene.view:insert(nivelFacil)
 
-  nivelDificil = display.newImage("images/nivelFacil.png")
+  nivelDificil = display.newImage("images/nivelDificil.png")
   nivelDificil.x = display.contentCenterX + 180
   nivelDificil.y = display.contentCenterY + 20
   scene.view:insert(nivelDificil)
