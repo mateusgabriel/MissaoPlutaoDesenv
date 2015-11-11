@@ -143,7 +143,7 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  btComecarJogo = display.newImage("images/botao.png")
+  btComecarJogo = display.newImage("images/botaoAsteroide.png")
   btComecarJogo.x = display.contentCenterX + 235
   btComecarJogo.y = display.contentCenterY + 250
   scene.view:insert(btComecarJogo)
