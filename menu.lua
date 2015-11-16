@@ -15,14 +15,14 @@ local cce
 local cce2
 local toqueTxt
 local plutaoLogo
+local criarGrupos = {}
 local carregarImgMenu = {}
-local carregarEfeitoToque = {}
+local carregarSubMenu = {}
+local toqueParaComecar = {}
 local carregarTextoToque = {}
+local carregarEfeitoToque = {}
 local carregarCeuEstrelado = {}
 local carregarCeuEstrelado2 = {}
-local carregarSubMenu = {}
-local criarGrupos = {}
-local toqueParaComecar = {}
 --------------------------------------------------------------------------------
 
 
@@ -52,10 +52,10 @@ function scene:show(event)
   if (phase == "will") then
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
+    background:addEventListener("touch", carregarSubMenu)
     cet = timer.performWithDelay(800, carregarEfeitoToque, 0)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
-    background:addEventListener("touch", carregarSubMenu)
     -- Chama quando a cena está na tela
     -- Inserir código para fazer que a cena venha "viva"
     -- Ex: start times, begin animation, play audio, etc

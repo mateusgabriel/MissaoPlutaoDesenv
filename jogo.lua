@@ -4,7 +4,6 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
---physics.setGravity( 0, 0 )
 --physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
@@ -31,6 +30,7 @@ local grupoCombComet
 local grupoAsteroides
 local distanciaTxt
 local combustivelTxt
+local toqueParaPausar
 local transitionCometas
 local transitionPlanetas
 local grupoPlanetaEstilingue
@@ -232,21 +232,21 @@ function carregarImgsJogo( )
 
   teto1 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto1.x = 0
-  teto1.y = -110
+  teto1.y = -90
   teto1.name = 'teto'
   physics.addBody(teto1, "static")
   scene.view:insert(teto1)
 
   teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto2.x = 410
-  teto2.y = -110
+  teto2.y = -90
   teto2.name = 'teto'
   physics.addBody(teto2, "static")
   scene.view:insert(teto2)
 
   teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto3.x = 1900
-  teto3.y = -110
+  teto3.y = -90
   teto3.name = 'teto'
   physics.addBody(teto3, "static")
   scene.view:insert(teto3)
@@ -257,6 +257,11 @@ function carregarImgsJogo( )
   chao.name = 'chao'
   physics.addBody(chao, "static")
   scene.view:insert(chao)
+
+  toqueParaPausar = display.newImage("images/botaoPausar.png", display.contentWidth, display.contentHeight)
+  toqueParaPausar.x = display.contentCenterX - 430
+  toqueParaPausar.y = display.contentCenterY - 275
+  scene.view:insert(toqueParaPausar)
 end
 --------------------------------------------------------------------------------
 
@@ -298,9 +303,21 @@ end
 -- Adicionar display DCP(Distância, Combustível, Pontos)
 --------------------------------------------------------------------------------
 function adicionarDisplayDCP()
-  distanciaTxt = display.newText("Distância 0 km", display.contentCenterX - 213, display.contentCenterY + 280, native.systemFontBold, 20)
+  distanciaDisplay = display.newImage("images/displayDistancia.png", display.contentWidth, display.contentHeight)
+  distanciaDisplay.x = display.contentCenterX + 100
+  distanciaDisplay.y = display.contentCenterY - 275
+  scene.view:insert(distanciaDisplay)
+  distanciaTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
+  distanciaTxt.x = display.contentCenterX + 115
+  distanciaTxt.y = display.contentCenterY - 275
   scene.view:insert(distanciaTxt)
-  combustivelTxt = display.newText("Combustível 0 mil/l", display.contentCenterX + 10, display.contentCenterY + 280, native.systemFontBold, 20)
+  combustivelDisplay = display.newImage("images/displayCombustivel.png", display.contentWidth, display.contentHeight)
+  combustivelDisplay.x = display.contentCenterX + 360
+  combustivelDisplay.y = display.contentCenterY - 278
+  scene.view:insert(combustivelDisplay)
+  combustivelTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
+  combustivelTxt.x = display.contentCenterX + 342
+  combustivelTxt.y = display.contentCenterY - 270
   scene.view:insert(combustivelTxt)
   pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), display.contentCenterY + 280, native.systemFontBold, 20)
   scene.view:insert(pontosTxt)
@@ -633,7 +650,7 @@ end
 --------------------------------------------------------------------------------
 function adicionarDistancia()
     distancia = distancia + 1
-    distanciaTxt.text = string.format("Distância %d km", distancia)
+    distanciaTxt.text = string.format("%d", distancia)
 end
 --------------------------------------------------------------------------------
 
@@ -642,7 +659,7 @@ end
 -- Adicionar combustível
 --------------------------------------------------------------------------------
 function adicionarCombustivel()
-  combustivelTxt.text = string.format("Combustível %d mil/l", combustivel)
+  combustivelTxt.text = string.format("%d", combustivel)
 end
 --------------------------------------------------------------------------------
 

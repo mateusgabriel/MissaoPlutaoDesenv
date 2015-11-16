@@ -4,7 +4,6 @@
 local composer = require("composer")
 local scene = composer.newScene( )
 local physics = require("physics")
-physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -14,11 +13,11 @@ physics.start()
 --------------------------------------------------------------------------------
 local cce
 local cce2
-local btRetornarMenu
 local creditosTxt
-local carregarImgsCreditos = {}
+local btRetornarMenu
 local criarGrupos = {}
 local retornarSubMenu = {}
+local carregarImgsCreditos = {}
 --------------------------------------------------------------------------------
 
 
@@ -135,15 +134,10 @@ function carregarImgsCreditos( )
   creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(creditosTxt)
 
-  btRetornarMenu = display.newImage("images/botao.png")
+  btRetornarMenu = display.newImage("images/botaoRetornaMenu.png")
   btRetornarMenu.x = display.contentCenterX - 250
   btRetornarMenu.y = display.contentCenterY + 250
   scene.view:insert(btRetornarMenu)
-
-  retornarMenuTxt = display.newImage("images/menu.png")
-  retornarMenuTxt.x = display.contentCenterX - 250
-  retornarMenuTxt.y = display.contentCenterY + 250
-  scene.view:insert(retornarMenuTxt)
 end
 --------------------------------------------------------------------------------
 

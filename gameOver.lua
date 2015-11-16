@@ -17,17 +17,18 @@ local cce2
 local gameOverTxt
 local btRetornarJogo
 local btRetornarMenu
+local btSairJogo
+local resultadoFinal
+local pontosGanhosTxt
+local resultadoFinalTxt
 local distanciaPercorridaTxt
 local combustivelConsumidoTxt
-local pontosGanhosTxt
-local resultadoFinal
-local resultadoFinalTxt
-local adicionarResultadoFinal = {}
-local calcularResultadoFinal = {}
-local carregarImgsGameOver = {}
 local criarGrupos = {}
 local retornarJogo = {}
 local retornarMenu = {}
+local carregarImgsGameOver = {}
+local calcularResultadoFinal = {}
+local adicionarResultadoFinal = {}
 --------------------------------------------------------------------------------
 
 
@@ -60,6 +61,7 @@ function scene:show(event)
     -- Chama quando a cena está fora da tela
   elseif (phase == "did") then
     btRetornarJogo:addEventListener("touch", retornarJogo)
+    btSairJogo:addEventListener("touch", fecharJogo)
     btRetornarMenu:addEventListener("touch", retornarMenu)
     cce = timer.performWithDelay(1000, carregarCeuEstrelado, 0)
     cce2 = timer.performWithDelay(1500, carregarCeuEstrelado2, 0)
@@ -148,25 +150,20 @@ function carregarImgsGameOver( )
   gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   scene.view:insert(gameOverTxt)
 
-  btRetornarJogo = display.newImage("images/botao.png")
+  btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentCenterX, display.contentCenterY)
+  btRetornarMenu.x = display.contentCenterX
+  btRetornarMenu.y = display.contentCenterY + 250
+  scene.view:insert(btRetornarMenu)
+
+  btRetornarJogo = display.newImage("images/botaoJogarNovamente.png", display.contentCenterX, display.contentCenterY)
   btRetornarJogo.x = display.contentCenterX - 250
   btRetornarJogo.y = display.contentCenterY + 250
   scene.view:insert(btRetornarJogo)
 
-  btRetornarMenu = display.newImage("images/botao.png")
-  btRetornarMenu.x = display.contentCenterX + 250
-  btRetornarMenu.y = display.contentCenterY + 250
-  scene.view:insert(btRetornarMenu)
-
-  retornarJogoTxt = display.newImage("images/jogarDeNovo.png")
-  retornarJogoTxt.x = display.contentCenterX - 240
-  retornarJogoTxt.y = display.contentCenterY + 250
-  scene.view:insert(retornarJogoTxt)
-
-  retornarMenuTxt = display.newImage("images/menu.png")
-  retornarMenuTxt.x = display.contentCenterX + 250
-  retornarMenuTxt.y = display.contentCenterY + 250
-  scene.view:insert(retornarMenuTxt)
+  btSairJogo = display.newImage("images/botaoSairJogo.png", display.contentCenterX, display.contentCenterY)
+  btSairJogo.x = display.contentCenterX + 250
+  btSairJogo.y = display.contentCenterY + 250
+  scene.view:insert(btSairJogo)
 
   combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 40, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
@@ -216,6 +213,21 @@ function calcularResultadoFinal()
   end
 end
 --------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Função para sair do jogo
+--------------------------------------------------------------------------------
+function fecharJogo()
+  if (system.getInfo("platformName") == "Android") then
+    native.requestExit()
+  else
+    os.exit()
+  end
+end
+--------------------------------------------------------------------------------
+
+
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas

@@ -13,18 +13,18 @@ local scene = composer.newScene()
 local cce
 local ced
 local cce2
-local btComecarJogo
 local btCreditos
-local comecarJogo = {}
+local btComecarJogo
 local creditos = {}
+local comecarJogo = {}
+local criarGrupos = {}
+local carregarEnredo = {}
 local carregarImgMenu = {}
-local carregarEfeitoToque = {}
+local toqueParaComecar = {}
 local carregarTextoToque = {}
+local carregarEfeitoToque = {}
 local carregarCeuEstrelado = {}
 local carregarCeuEstrelado2 = {}
-local carregarEnredo = {}
-local criarGrupos = {}
-local toqueParaComecar = {}
 --------------------------------------------------------------------------------
 
 
@@ -148,20 +148,10 @@ function carregarImgsMenu( )
   btComecarJogo.y = display.contentCenterY + 250
   scene.view:insert(btComecarJogo)
 
-  btCreditos = display.newImage("images/botao.png")
+  btCreditos = display.newImage("images/botaoCreditos.png")
   btCreditos.x = display.contentCenterX - 250
   btCreditos.y = display.contentCenterY + 250
   scene.view:insert(btCreditos)
-
-  comecarTxt = display.newImage("images/comecar.png")
-  comecarTxt.x = display.contentCenterX + 242
-  comecarTxt.y = display.contentCenterY + 250
-  scene.view:insert(comecarTxt)
-
-  creditosTxt = display.newImage("images/creditos.png")
-  creditosTxt.x = display.contentCenterX - 242
-  creditosTxt.y = display.contentCenterY + 250
-  scene.view:insert(creditosTxt)
 
   escolhaNivelTxt = display.newImage("images/escolhaNivel.png")
   escolhaNivelTxt.x = display.contentCenterX
