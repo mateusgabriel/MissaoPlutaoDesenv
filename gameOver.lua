@@ -42,7 +42,7 @@ function scene:create(event)
   calcularResultadoFinal()
   criarGrupos()
 
-  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 100, native.systemFontBold, 20)
+  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 70, native.systemFontBold, 20)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -147,31 +147,35 @@ function carregarImgsGameOver( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  --gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
+  gameOverTxt = display.newImage("images/fimDeJogo.png", display.contentCenterX, display.contentCenterY)
+  gameOverTxt.x = display.contentCenterX
+  gameOverTxt.y = display.contentCenterY - 200
   scene.view:insert(gameOverTxt)
+
 
   btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentCenterX, display.contentCenterY)
   btRetornarMenu.x = display.contentCenterX
-  btRetornarMenu.y = display.contentCenterY + 250
+  btRetornarMenu.y = display.contentCenterY + 235
   scene.view:insert(btRetornarMenu)
 
   btRetornarJogo = display.newImage("images/botaoJogarNovamente.png", display.contentCenterX, display.contentCenterY)
   btRetornarJogo.x = display.contentCenterX - 250
-  btRetornarJogo.y = display.contentCenterY + 250
+  btRetornarJogo.y = display.contentCenterY + 235
   scene.view:insert(btRetornarJogo)
 
   btSairJogo = display.newImage("images/botaoSairJogo.png", display.contentCenterX, display.contentCenterY)
   btSairJogo.x = display.contentCenterX + 250
-  btSairJogo.y = display.contentCenterY + 250
+  btSairJogo.y = display.contentCenterY + 235
   scene.view:insert(btSairJogo)
 
-  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY + 40, native.systemFontBold, 20)
+  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY - 35, native.systemFontBold, 20)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY + 60, native.systemFontBold, 20)
+  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY - 10, native.systemFontBold, 20)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 80, native.systemFontBold, 20)
+  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 18, native.systemFontBold, 20)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------

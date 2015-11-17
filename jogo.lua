@@ -230,19 +230,19 @@ function carregarImgsJogo( )
   estrelas3.y = display.contentCenterY
   scene.view:insert(estrelas3)
 
-  teto1 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto1.x = 0
-  teto1.y = -90
+  teto1 = display.newImage("images/chaoMeteorito.png", display.contentWidth, display.contentHeight)
+  teto1.x = display.contentCenterX
+  teto1.y = display.contentCenterY + 370
   teto1.name = 'teto'
   physics.addBody(teto1, "static")
   scene.view:insert(teto1)
 
-  teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto2.x = 410
-  teto2.y = -90
-  teto2.name = 'teto'
-  physics.addBody(teto2, "static")
-  scene.view:insert(teto2)
+  --teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
+  --teto2.x = 410
+  --teto2.y = -90
+  --teto2.name = 'teto'
+  --physics.addBody(teto2, "static")
+  --scene.view:insert(teto2)
 
   teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto3.x = 1900
@@ -303,24 +303,36 @@ end
 -- Adicionar display DCP(Distância, Combustível, Pontos)
 --------------------------------------------------------------------------------
 function adicionarDisplayDCP()
+  displayPontos = display.newImage("images/displayPontos.png", display.contentWidth, display.contentHeight)
+  displayPontos.x = display.contentCenterX - 220
+  displayPontos.y = display.contentCenterY - 280
+  scene.view:insert(displayPontos)
+  pontosTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
+  pontosTxt.x = display.contentCenterX - 170
+  pontosTxt.y = display.contentCenterY - 275
+  scene.view:insert(pontosTxt)
+
   distanciaDisplay = display.newImage("images/displayDistancia.png", display.contentWidth, display.contentHeight)
-  distanciaDisplay.x = display.contentCenterX + 100
+  distanciaDisplay.x = display.contentCenterX - 10
   distanciaDisplay.y = display.contentCenterY - 275
   scene.view:insert(distanciaDisplay)
   distanciaTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
-  distanciaTxt.x = display.contentCenterX + 115
+  distanciaTxt.x = display.contentCenterX + 2
   distanciaTxt.y = display.contentCenterY - 275
   scene.view:insert(distanciaTxt)
+
   combustivelDisplay = display.newImage("images/displayCombustivel.png", display.contentWidth, display.contentHeight)
-  combustivelDisplay.x = display.contentCenterX + 360
+  combustivelDisplay.x = display.contentCenterX + 230
   combustivelDisplay.y = display.contentCenterY - 278
   scene.view:insert(combustivelDisplay)
   combustivelTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
-  combustivelTxt.x = display.contentCenterX + 342
+  combustivelTxt.x = display.contentCenterX + 210
   combustivelTxt.y = display.contentCenterY - 270
   scene.view:insert(combustivelTxt)
-  pontosTxt = display.newText("0 Pontos", display.contentCenterX - (-190), display.contentCenterY + 280, native.systemFontBold, 20)
-  scene.view:insert(pontosTxt)
+  --displayDCP = display.newImage("images/displayCDP.png", display.contentWidth, display.contentHeight)
+  --displayDCP.x = display.contentCenterX
+  --displayDCP.y = display.contentCenterY + 280
+  --scene.view:insert(displayDCP)
 end
 --------------------------------------------------------------------------------
 
@@ -668,7 +680,7 @@ end
 -- Adicionar pontos
 --------------------------------------------------------------------------------
 function adicionarPontos()
-  pontosTxt.text = string.format("%d Pontos", pontos)
+  pontosTxt.text = string.format("%d", pontos)
 end
 --------------------------------------------------------------------------------
 
