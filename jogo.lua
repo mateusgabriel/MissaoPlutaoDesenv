@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ local sin = math.sin
 local rad = math.rad
 local atan2 = math.atan2
 local deg = math.deg
-local raio = 42 -- Distancia do estilingue do centro do planeta
+local raio = 38 -- Distancia do estilingue do centro do planeta
 local angulo = 90 -- Ponto de início da rotação
 local atvFoguete = false
 local atvOrbita = true
@@ -110,7 +110,7 @@ function scene:show(event)
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
-    coc = timer.performWithDelay( 10000, carregarObjCombustivel, 1 )
+    coc = timer.performWithDelay( 3000, carregarObjCombustivel, 1 )
     apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
     ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
@@ -161,7 +161,10 @@ function scene:destroy(event)
   display.remove(teto1)
   display.remove(teto2)
   display.remove(teto3)
+  display.remove(cometa)
   display.remove(foguete)
+  display.remove(planeta)
+  display.remove(estilingue)
   display.remove(background)
   display.remove(grupoCombComet)
   display.remove(grupoAsteroides)
@@ -231,18 +234,18 @@ function carregarImgsJogo( )
   scene.view:insert(estrelas3)
 
   teto1 = display.newImage("images/chaoMeteorito.png", display.contentWidth, display.contentHeight)
-  teto1.x = display.contentCenterX
-  teto1.y = display.contentCenterY + 370
+  teto1.x = display.contentCenterX - 30
+  teto1.y = display.contentCenterY + 380
   teto1.name = 'teto'
-  physics.addBody(teto1, "static")
+  physics.addBody(teto1, "dynamic")
   scene.view:insert(teto1)
 
-  --teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  --teto2.x = 410
-  --teto2.y = -90
-  --teto2.name = 'teto'
-  --physics.addBody(teto2, "static")
-  --scene.view:insert(teto2)
+  teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
+  teto2.x = 410
+  teto2.y = -193
+  teto2.name = 'teto'
+  physics.addBody(teto2, "static")
+  scene.view:insert(teto2)
 
   teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
   teto3.x = 1900
@@ -253,20 +256,20 @@ function carregarImgsJogo( )
 
   chao = display.newImageRect("images/chao.png", display.contentWidth, display.contentHeight)
   chao.x = display.contentCenterX
-  chao.y = display.contentCenterY + 645
+  chao.y = display.contentCenterY + 800
   chao.name = 'chao'
   physics.addBody(chao, "static")
   scene.view:insert(chao)
 
   toqueParaPausar = display.newImage("images/botaoPausar.png", display.contentWidth, display.contentHeight)
   toqueParaPausar.x = display.contentCenterX - 430
-  toqueParaPausar.y = display.contentCenterY - 275
+  toqueParaPausar.y = display.contentCenterY - 277
   scene.view:insert(toqueParaPausar)
 end
 --------------------------------------------------------------------------------
 
 
---------------------------------------------------------------------------------
+---------------------------------S-----------------------------------------------
 -- Carregar foguete
 --------------------------------------------------------------------------------
 function carregarFoguete()
@@ -292,7 +295,6 @@ function carregarObjCombustivel()
   objCombustivel.y = math.random(25, display.contentHeight - 50 )
   objCombustivel.name = 'combustivel'
   physics.addBody( objCombustivel, "dynamic" )
-  objCombustivel.isSensor = true
   transitionComb = transition.to( objCombustivel, {time = speed, x = -50, y = objCombustivel.y})
   grupoCombComet:insert(objCombustivel)
 end
@@ -510,16 +512,15 @@ end
 -- Carregar cometas pela distância
 --------------------------------------------------------------------------------
 function carregarCometasIniciaisPorDistancia()
-  if (distancia > 0 and distancia < 30) then
+  if (distancia > 0 and distancia < 33) then
     cometa = display.newImage("images/cometaAzul.png")
     cometa.x = display.contentWidth + 150
     cometa.y = math.random(25, display.contentHeight - 50 )
     cometa.name = 'cometa'
     cometa.isFixedRotation = true
-    cometa.isSensor = true
-    physics.addBody(cometa, "dynamic")
+    physics.addBody(cometa, "kinematic")
     grupoCombComet:insert(cometa)
-    transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+    transitionCometas = transition.to( cometa, {time = speed, x = -500, y = cometa.y})
   end
 end
 --------------------------------------------------------------------------------
