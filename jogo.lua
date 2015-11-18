@@ -368,20 +368,24 @@ end
 --------------------------------------------------------------------------------
 -- Adiciona planeta Marte
 --------------------------------------------------------------------------------
-function adicionarMarte()
+function adicionarMarte(event)
   planeta = display.newImage("images/marte.png")
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 30
   local cancelaOrbita = function(obj)
+    obj:removeSelf()
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
+    obj = nil
   end
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
-  estilingue = display.newImage("images/estilingue1.png")
+  local estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
+  estilingue.collision = estilingueCollision
+  estilingue.addEventListener("collision", estilingue)
   estilingue.isFixedRotation = true
   physics.addBody(estilingue, "dynamic", {density=1.0, friction=0.3, bounce=0.2})
   grupoPlanetaEstilingue:insert(estilingue)
@@ -399,8 +403,10 @@ function adicionarJupiter()
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 60
   local cancelaOrbita = function(obj)
+    obj:removeSelf()
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
+    obj = nil
   end
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
@@ -408,6 +414,8 @@ function adicionarJupiter()
 
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
+  estilingue.collision = estilingueCollision
+  estilingue.addEventListener("collision", estilingue)
   estilingue.isFixedRotation = true
   physics.addBody(estilingue, "dynamic")
   grupoPlanetaEstilingue:insert(estilingue)
@@ -459,8 +467,10 @@ function adicionarNeturno()
   planeta.x = display.contentWidth + 150
   planeta.y = display.contentCenterY + 30
   local cancelaOrbita = function(obj)
+    obj:removeSelf()
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
+    obj = nil
   end
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
@@ -468,6 +478,8 @@ function adicionarNeturno()
 
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
+  estilingue.collision = estilingueCollision
+  estilingue.addEventListener("collision", estilingue)
   estilingue.isFixedRotation = true
   physics.addBody(estilingue, "dynamic")
   grupoPlanetaEstilingue:insert(estilingue)
@@ -740,14 +752,12 @@ function onLocalCollision(event)
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
       event.object2:removeSelf()
     end
-    --if (event.object1.name == "foguete" and event.object2.name == "planeta") then
-      --event.object1:removeSelf()
-    --end
-    if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
-      Runtime:removeEventListener("enterFrame", criarOrbita)
-      event.object2:removeSelf()
+    --if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
+      --event.object2:removeSelf()
+      --Runtime:removeEventListener("enterFrame", criarOrbita)
+      --event.object2 = nil
       --aumentarVelocidade()
-    end
+    --end
     if (event.object1.name == "teto" and event.object2.name == "combustivel") then
       event.object2:removeSelf()
     elseif (event.object1.name == "combustivel" and event.object2.name == "teto") then
@@ -762,6 +772,16 @@ function onLocalCollision(event)
 	end
 end
 --------------------------------------------------------------------------------
+
+
+function estilingueCollision(self, event)
+  if (event.other.name == "foguete") then
+    self:removeSelf()
+    self:removeEventListener("collision", estilingue)
+    Runtime:removeEventListener("enterFrame", criarOrbita)
+    self = nil
+  end
+end
 
 
 --------------------------------------------------------------------------------
