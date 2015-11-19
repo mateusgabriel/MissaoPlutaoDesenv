@@ -281,8 +281,8 @@ function carregarFoguete()
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isFixedRotation = true
-  foguete.isSensor = false
   physics.addBody(foguete, "dynamic")
+  foguete.isSensor = true
   scene.view:insert(foguete)
   --grupoFoguete:insert(foguete)
 end
@@ -383,14 +383,14 @@ function adicionarMarte()
   end
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
   --physics.addBody(planeta, "dynamic")
-  scene.view:insert(planeta)
+  grupoPlanetaEstilingue:insert(planeta)
 
   estilingue = display.newImage("images/estilingue1.png")
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
-  estilingue.isSensor = true
   physics.addBody(estilingue, "kinematic")
-  scene.view:insert(estilingue)
+  estilingue.isSensor = false
+  grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
 end
@@ -403,7 +403,7 @@ end
 function adicionarJupiter()
   planeta = display.newImage("images/jupiter.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 60
+  planeta.y = display.contentCenterY - 20
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
@@ -417,6 +417,7 @@ function adicionarJupiter()
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
   physics.addBody(estilingue, "kinematic")
+  estilingue.isSensor = false
   grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
@@ -478,6 +479,7 @@ function adicionarNeturno()
   estilingue.name = 'estilingue'
   estilingue.isFixedRotation = true
   physics.addBody(estilingue, "kinematic")
+  estilingue.isSensor = false
   grupoPlanetaEstilingue:insert(estilingue)
 
   Runtime:addEventListener("enterFrame", criarOrbita)
@@ -584,7 +586,8 @@ function adicionarAsteroidesMarrons()
   asteroide.y = math.random(25, display.contentHeight - 50 )
   asteroide.name = 'cometa'
   asteroide.isFixedRotation = true
-  physics.addBody( asteroide, "dynamic" )
+  physics.addBody(asteroide, "dynamic")
+  asteroide.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
   transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
@@ -601,7 +604,8 @@ function adicionarCometasVermelhos()
   cometa.y = math.random(20, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
-  physics.addBody(cometa, "dynamic", {isSensor = false})
+  physics.addBody(cometa, "dynamic")
+  cometa.isSensor = true
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
@@ -618,6 +622,7 @@ function adicionarCometasBrancos()
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   physics.addBody(cometa, "dynamic")
+  cometa.isSensor = true
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
@@ -634,6 +639,7 @@ function adicionarCometasAnis()
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   physics.addBody(cometa, "dynamic")
+  cometa.isSensor = true
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
 end
@@ -653,8 +659,9 @@ function adicionarAsteroidesCinzas()
   asteroide.x = display.contentWidth + 150
   asteroide.y = math.random(25, display.contentHeight - 50 )
   asteroide.name = 'cometa'
-  asteroide.isFixedRotation = true
-  physics.addBody( asteroide, "dynamic" )
+  cometa.isFixedRotation = true
+  physics.addBody(cometa, "dynamic")
+  cometa.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
   transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
