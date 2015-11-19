@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -310,11 +310,11 @@ end
 --------------------------------------------------------------------------------
 function adicionarDisplayDCP()
   displayPontos = display.newImage("images/displayPontos.png", display.contentWidth, display.contentHeight)
-  displayPontos.x = display.contentCenterX - 220
+  displayPontos.x = display.contentCenterX - 240
   displayPontos.y = display.contentCenterY - 280
   scene.view:insert(displayPontos)
   pontosTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
-  pontosTxt.x = display.contentCenterX - 170
+  pontosTxt.x = display.contentCenterX - 190
   pontosTxt.y = display.contentCenterY - 275
   scene.view:insert(pontosTxt)
 
@@ -328,11 +328,11 @@ function adicionarDisplayDCP()
   scene.view:insert(distanciaTxt)
 
   combustivelDisplay = display.newImage("images/displayCombustivel.png", display.contentWidth, display.contentHeight)
-  combustivelDisplay.x = display.contentCenterX + 230
+  combustivelDisplay.x = display.contentCenterX + 260
   combustivelDisplay.y = display.contentCenterY - 278
   scene.view:insert(combustivelDisplay)
   combustivelTxt = display.newText("0", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 36)
-  combustivelTxt.x = display.contentCenterX + 210
+  combustivelTxt.x = display.contentCenterX + 240
   combustivelTxt.y = display.contentCenterY - 270
   scene.view:insert(combustivelTxt)
   --displayDCP = display.newImage("images/displayCDP.png", display.contentWidth, display.contentHeight)
@@ -659,9 +659,9 @@ function adicionarAsteroidesCinzas()
   asteroide.x = display.contentWidth + 150
   asteroide.y = math.random(25, display.contentHeight - 50 )
   asteroide.name = 'cometa'
-  cometa.isFixedRotation = true
-  physics.addBody(cometa, "dynamic")
-  cometa.isSensor = true
+  asteroide.isFixedRotation = true
+  physics.addBody(asteroide, "dynamic")
+  coasteroidemeta.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
   transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
