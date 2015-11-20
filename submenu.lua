@@ -143,30 +143,25 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  btComecarJogo = display.newImage("images/botaoAsteroide.png")
-  btComecarJogo.x = display.contentCenterX + 250
+  instrucoesTxt = display.newText("Instruções", display.contentWidth, display.contentHeight, "Rocket Script", 65)
+  instrucoesTxt.x = display.contentCenterX
+  instrucoesTxt.y = display.contentCenterY - 230
+  scene.view:insert(instrucoesTxt)
+
+  btComecarJogo = display.newImage("images/botaoAsteroide.png", display.contentWidth, display.contentHeight)
+  btComecarJogo.x = display.contentCenterX + 380
   btComecarJogo.y = display.contentCenterY + 235
   scene.view:insert(btComecarJogo)
 
-  btCreditos = display.newImage("images/botaoCreditos.png")
-  btCreditos.x = display.contentCenterX - 250
+  btCreditos = display.newImage("images/botaoCreditos.png", display.contentWidth, display.contentHeight)
+  btCreditos.x = display.contentCenterX - 380
   btCreditos.y = display.contentCenterY + 235
   scene.view:insert(btCreditos)
 
-  escolhaNivelTxt = display.newImage("images/instrucoes.png")
-  escolhaNivelTxt.x = display.contentCenterX
-  escolhaNivelTxt.y = display.contentCenterY - 200
+  escolhaNivelTxt = display.newImage("images/instrucoes.png", display.contentWidth, display.contentHeight)
+  escolhaNivelTxt.x = display.contentCenterX - 20
+  escolhaNivelTxt.y = display.contentCenterY + 35
   scene.view:insert(escolhaNivelTxt)
-
-  nivelFacil = display.newImage("images/nivelFacil.png")
-  nivelFacil.x = display.contentCenterX
-  nivelFacil.y = display.contentCenterY
-  scene.view:insert(nivelFacil)
-
-  --nivelDificil = display.newImage("images/nivelDificil.png")
-  --nivelDificil.x = display.contentCenterX + 180
-  --nivelDificil.y = display.contentCenterY + 20
-  --scene.view:insert(nivelDificil)
 end
 --------------------------------------------------------------------------------
 
