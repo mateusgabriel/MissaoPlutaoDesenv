@@ -9,7 +9,7 @@ local configTransicaoMenu = {
 --------------------------------------------------------------------------------
 
 local composer = require ("composer")
-composer.gotoScene("submenu", configTransicaoMenu)
+composer.gotoScene("menu", configTransicaoMenu)
 
 
 --------------------------------------------------------------------------------
