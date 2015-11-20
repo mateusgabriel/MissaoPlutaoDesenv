@@ -20,6 +20,7 @@ local coc -- recebe a criação do objeto combustível
 local adp -- recebe o incrementador(adicionar) de pontos
 local adc -- recebe o incrementador(adicionar) do combustível
 local apd
+local vcb
 --local cometa
 local foguete
 --local planeta
@@ -66,6 +67,7 @@ local controlarFoguete = {}
 local adicionarDistancia = {}
 local aumentarVelocidade = {}
 local adicionarDisplayDCP = {}
+local verificaCombustivel = {}
 local adicionarCombustivel = {}
 local adicionarCometasAnis = {}
 local carregarObjCombustivel = {}
@@ -110,13 +112,12 @@ function scene:show(event)
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
-    coc = timer.performWithDelay( 3000, carregarObjCombustivel, 1 )
+    coc = timer.performWithDelay( 5000, carregarObjCombustivel, 0 )
     apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
     ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
     cad = timer.performWithDelay( 1600, carregarCometasAsteroidesPorDistancia, 0 )
-    --cad = timer.performWithDelay( 43000, adicionarAsteroidesMarrons, 15)
-    --estilingue:addEventListener("collision", estilingueCollision)
+    vcb = timer.performWithDelay( 1000, verificaCombustivel, 0)
     background:addEventListener("touch", controlarFoguete)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
@@ -202,6 +203,10 @@ function scene:destroy(event)
     timer.cancel(cad)
     cad = nil
   end
+  if (vcb) then
+    timer.cancel(vcb)
+    vcb = nil
+  end
   --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
   -- Código para "limpar" a cena
@@ -276,8 +281,8 @@ end
 -- Carregar foguete
 --------------------------------------------------------------------------------
 function carregarFoguete()
-  foguete = display.newImage("images/nave.png")
-  foguete.x = 100
+  foguete = display.newImage("images/nave.png", display.contentWidth, display.contentHeight)
+  foguete.x = 150
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isFixedRotation = true
@@ -541,9 +546,6 @@ end
 -- Carregar asteroides pela distância
 --------------------------------------------------------------------------------
 function carregarCometasAsteroidesPorDistancia()
-  --local contador = 0
-  --local contadorAux = 13
-  --if (contador ~= contadorAux) then
     if (distancia > 43 and distancia < 57) then
       adicionarAsteroidesMarrons()
       --contador = contador + 1
@@ -567,7 +569,6 @@ function carregarCometasAsteroidesPorDistancia()
     else
       print('saindo de carregarCometasAsteroidesPorDistancia()')
     end
-  --end
 end
 --------------------------------------------------------------------------------
 
@@ -661,10 +662,24 @@ function adicionarAsteroidesCinzas()
   asteroide.name = 'cometa'
   asteroide.isFixedRotation = true
   physics.addBody(asteroide, "dynamic")
-  coasteroidemeta.isSensor = true
+  asteroide.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
   transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Monitora a quantidade combustível no tanque da nave
+--------------------------------------------------------------------------------
+function verificaCombustivel()
+  if (combustivel == 0) then
+    print('Seu combustível se esgotou :/')
+    gameOver()
+  elseif(distancia <= 50) then
+    print('Seu combustível está se esgotando!')
+  end
 end
 --------------------------------------------------------------------------------
 
@@ -755,7 +770,7 @@ function onLocalCollision(event)
       event.object2:removeSelf()
       --Runtime:removeEventListener("enterFrame", criarOrbita)
       event.object2 = nil
-      --aumentarVelocidade()
+      aumentarVelocidade()
     end
     if (event.object1.name == "teto" and event.object2.name == "combustivel") then
       event.object2:removeSelf()
@@ -773,23 +788,13 @@ end
 --------------------------------------------------------------------------------
 
 
-function estilingueCollision(event)
-  if (event.object1.name == "foguete" and event.object2.name == "estilingue") then
-    event.object2:removeSelf()
-    event.object2:removeEventListener("collision", estilingue)
-    Runtime:removeEventListener("enterFrame", criarOrbita)
-    event.object2 = nil
-  end
-end
-
-
 --------------------------------------------------------------------------------
--- A cada 500km percorridos serão decrementados combustível e pontos do jogador
+-- A cada estilingue pegue a velocidade aumentará junto à difuldade
 --------------------------------------------------------------------------------
 function aumentarVelocidade()
-  speedEstrelas = speedEstrelas + 3
-  speed = speed + 2
-  distancia = distancia + 15
+  speedEstrelas = speedEstrelas + 2
+  speed = speed + 3
+  distancia = distancia + 2
 end
 --------------------------------------------------------------------------------
 
@@ -819,7 +824,7 @@ end
 function perderCombustivelPontosPorDistancia()
   if (distancia == distanciaAux) then
     perderCP()
-    distanciaAux = distanciaAux + 25
+    distanciaAux = distanciaAux + 10
   end
 end
 --------------------------------------------------------------------------------

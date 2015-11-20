@@ -15,7 +15,6 @@ local cce
 local cce2
 local creditosTxt
 local btRetornarMenu
-local criarGrupos = {}
 local retornarSubMenu = {}
 local carregarImgsCreditos = {}
 --------------------------------------------------------------------------------
@@ -131,15 +130,14 @@ function carregarImgsCreditos( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  --creditosTxt = display.newText("Créditos", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
-  creditosTxt = display.newImage("images/creditos.png", display.contentWidth, display.contentHeight)
+  creditosTxt = display.newText("Créditos", display.contentWidth, display.contentHeight, "Rocket Script", 65)
   creditosTxt.x = display.contentCenterX
-  creditosTxt.y = display.contentCenterY - 200
+  creditosTxt.y = display.contentCenterY - 230
   scene.view:insert(creditosTxt)
 
-  btRetornarMenu = display.newImage("images/botaoRetornaMenu.png")
-  btRetornarMenu.x = display.contentCenterX - 250
-  btRetornarMenu.y = display.contentCenterY + 250
+  btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentWidth, display.contentHeight)
+  btRetornarMenu.x = display.contentCenterX - 380
+  btRetornarMenu.y = display.contentCenterY + 235
   scene.view:insert(btRetornarMenu)
 end
 --------------------------------------------------------------------------------

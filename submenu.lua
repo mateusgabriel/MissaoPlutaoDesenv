@@ -17,7 +17,6 @@ local btCreditos
 local btComecarJogo
 local creditos = {}
 local comecarJogo = {}
-local criarGrupos = {}
 local carregarEnredo = {}
 local carregarImgMenu = {}
 local toqueParaComecar = {}
@@ -35,7 +34,6 @@ local carregarCeuEstrelado2 = {}
 function scene:create(event)
   local sceneGroup = self.view
   carregarImgsMenu()
-  criarGrupos()
 
 end
 --------------------------------------------------------------------------------
@@ -113,16 +111,6 @@ end
 
 
 --------------------------------------------------------------------------------
--- Cria grupo(s) para unir elementos da tela
---------------------------------------------------------------------------------
-function criarGrupos( )
-  --grupoMenu = display.newGroup( )
-  --scene.view:insert(grupoMenu)
-end
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
 -- Carregar imagens contidas no menu
 --------------------------------------------------------------------------------
 function carregarImgsMenu( )
@@ -158,10 +146,10 @@ function carregarImgsMenu( )
   btCreditos.y = display.contentCenterY + 235
   scene.view:insert(btCreditos)
 
-  escolhaNivelTxt = display.newImage("images/instrucoes.png", display.contentWidth, display.contentHeight)
-  escolhaNivelTxt.x = display.contentCenterX - 20
-  escolhaNivelTxt.y = display.contentCenterY + 35
-  scene.view:insert(escolhaNivelTxt)
+  instrucoesDisplay = display.newImage("images/instrucoes.png", display.contentWidth, display.contentHeight)
+  instrucoesDisplay.x = display.contentCenterX - 20
+  instrucoesDisplay.y = display.contentCenterY + 35
+  scene.view:insert(instrucoesDisplay)
 end
 --------------------------------------------------------------------------------
 
