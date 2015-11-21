@@ -131,7 +131,7 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  instrucoesTxt = display.newText("Instruções", display.contentWidth, display.contentHeight, "Rocket Script", 70)
+  instrucoesTxt = display.newText("Instruções", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 70)
   instrucoesTxt.x = display.contentCenterX
   instrucoesTxt.y = display.contentCenterY - 230
   scene.view:insert(instrucoesTxt)
