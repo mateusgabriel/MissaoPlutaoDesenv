@@ -131,7 +131,7 @@ function carregarImgsMenu( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  instrucoesTxt = display.newText("Instruções", display.contentWidth, display.contentHeight, "Rocket Script", 65)
+  instrucoesTxt = display.newText("Instruções", display.contentWidth, display.contentHeight, "Rocket Script", 70)
   instrucoesTxt.x = display.contentCenterX
   instrucoesTxt.y = display.contentCenterY - 230
   scene.view:insert(instrucoesTxt)
@@ -147,8 +147,8 @@ function carregarImgsMenu( )
   scene.view:insert(btCreditos)
 
   instrucoesDisplay = display.newImage("images/instrucoes.png", display.contentWidth, display.contentHeight)
-  instrucoesDisplay.x = display.contentCenterX - 20
-  instrucoesDisplay.y = display.contentCenterY + 35
+  instrucoesDisplay.x = display.contentCenterX + 10
+  instrucoesDisplay.y = display.contentCenterY + 30
   scene.view:insert(instrucoesDisplay)
 end
 --------------------------------------------------------------------------------

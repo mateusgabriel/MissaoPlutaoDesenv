@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
---physics.setDrawMode("hybrid")
+physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -248,14 +248,14 @@ function carregarImgsJogo( )
   scene.view:insert(teto1)
 
   teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto2.x = 410
+  teto2.x = 500
   teto2.y = -193
   teto2.name = 'teto'
   physics.addBody(teto2, "static")
   scene.view:insert(teto2)
 
   teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto3.x = 1900
+  teto3.x = 2300
   teto3.y = -90
   teto3.name = 'teto'
   physics.addBody(teto3, "static")
@@ -270,14 +270,14 @@ function carregarImgsJogo( )
   scene.view:insert(chao)
 
   toqueParaPausar = display.newImage("images/botaoPausar.png", display.contentWidth, display.contentHeight)
-  toqueParaPausar.x = display.contentCenterX - 430
+  toqueParaPausar.x = display.contentCenterX - 435
   toqueParaPausar.y = display.contentCenterY - 277
   scene.view:insert(toqueParaPausar)
 end
 --------------------------------------------------------------------------------
 
 
----------------------------------S-----------------------------------------------
+--------------------------------------------------------------------------------
 -- Carregar foguete
 --------------------------------------------------------------------------------
 function carregarFoguete()
@@ -298,7 +298,7 @@ end
 -- Carregar objeto combustível
 --------------------------------------------------------------------------------
 function carregarObjCombustivel()
-  objCombustivel = display.newImage("images/combustivel.png")
+  objCombustivel = display.newImage("images/combustivel2.png")
   objCombustivel.x = display.contentWidth + 150
   objCombustivel.y = math.random(25, display.contentHeight - 50 )
   objCombustivel.name = 'combustivel'
