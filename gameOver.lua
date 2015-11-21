@@ -42,7 +42,7 @@ function scene:create(event)
   calcularResultadoFinal()
   criarGrupos()
 
-  resultadoFinalTxt = display.newText('Resultado Final  ' .. resultadoFinal, display.contentCenterX, display.contentCenterY + 70, native.systemFontBold, 20)
+  resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX + 230, display.contentCenterY + 83, "Visitor TT1 BRK", 50)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -147,7 +147,6 @@ function carregarImgsGameOver( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  --gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
   gameOver = display.newImage("images/displayFimDeJogo.png", display.contentCenterX, display.contentCenterY)
   gameOver.x = display.contentCenterX
   gameOver.y = display.contentCenterY
@@ -173,13 +172,13 @@ function carregarImgsGameOver( )
   btSairJogo.y = display.contentCenterY + 235
   scene.view:insert(btSairJogo)
 
-  combustivelConsumidoTxt = display.newText('Combustível Restante  ' .. combustivel, display.contentCenterX, display.contentCenterY - 35, native.systemFontBold, 20)
+  combustivelConsumidoTxt = display.newText('' .. combustivel, display.contentCenterX + 240, display.contentCenterY - 75, "Visitor TT1 BRK", 42)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('Distância Percorrida  ' .. distancia, display.contentCenterX, display.contentCenterY - 10, native.systemFontBold, 20)
+  distanciaPercorridaTxt = display.newText('' .. distancia, display.contentCenterX + 240, display.contentCenterY - 30, "Visitor TT1 BRK", 42)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('Pontos Obtidos  ' .. pontos, display.contentCenterX, display.contentCenterY + 18, native.systemFontBold, 20)
+  pontosGanhosTxt = display.newText('' .. pontos, display.contentCenterX + 240, display.contentCenterY + 13, "Visitor TT1 BRK", 42)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------
@@ -214,11 +213,7 @@ end
 -- Calcula o resultado final com bases nos valores globais de distância e pontos
 --------------------------------------------------------------------------------
 function calcularResultadoFinal()
-  if (pontos == 0 or pontos == 1) then
-    resultadoFinal = distancia
-  else
-    resultadoFinal = distancia * pontos
-  end
+    resultadoFinal = distancia + pontos + combustivel
 end
 --------------------------------------------------------------------------------
 
@@ -253,7 +248,7 @@ function retornarJogo( )
   composer.removeScene("gameOver")
 	composer.gotoScene("jogo", configTransicaoJogoSubMenu)
   distancia = 0
-  distanciaAux = 25
+  distanciaAux = 10
   combustivel = 100
   pontos = 0
 end

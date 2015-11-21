@@ -4,7 +4,7 @@
 local composer = require("composer")
 local scene = composer.newScene()
 local physics = require("physics")
-physics.setDrawMode("hybrid")
+--physics.setDrawMode("hybrid")
 physics.start()
 --------------------------------------------------------------------------------
 
@@ -33,6 +33,7 @@ local distanciaTxt
 local combustivelTxt
 local toqueParaPausar
 local transitionCometas
+local toqueParaContinuar
 local transitionPlanetas
 local grupoPlanetaEstilingue
 local cos = math.cos
@@ -42,17 +43,20 @@ local atan2 = math.atan2
 local deg = math.deg
 local raio = 38 -- Distancia do estilingue do centro do planeta
 local angulo = 90 -- Ponto de início da rotação
+local atvBotao = false
 local atvFoguete = false
 local atvOrbita = true
 local aplicaForca = - 60
-local speed = 8000
+local speed = 7000
 local speedPlanetas = 20000
 local speedEstrelas = 3
 local gameOver = {}
 local perderCP = {}
 local ganharCP = {}
+local pausarJogo = {}
 local criarGrupos = {}
 local criarOrbita = {}
+local retormarJogo = {}
 local adicionarMarte = {}
 local adicionarUrano = {}
 local scrollEstrelas = {}
@@ -112,13 +116,15 @@ function scene:show(event)
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
-    coc = timer.performWithDelay( 5000, carregarObjCombustivel, 0 )
+    coc = timer.performWithDelay( 10000, carregarObjCombustivel, 0 )
     apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
     ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
     cad = timer.performWithDelay( 1600, carregarCometasAsteroidesPorDistancia, 0 )
     vcb = timer.performWithDelay( 1000, verificaCombustivel, 0)
     background:addEventListener("touch", controlarFoguete)
+    toqueParaPausar:addEventListener("touch", pausarJogo)
+    toqueParaContinuar:addEventListener("touch", retormarJogo)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
@@ -243,20 +249,20 @@ function carregarImgsJogo( )
   teto1.x = display.contentCenterX - 30
   teto1.y = display.contentCenterY + 380
   teto1.name = 'teto'
-  physics.addBody(teto1, "kinematic")
+  physics.addBody(teto1, "static")
   teto1.isSensor = false
   scene.view:insert(teto1)
 
-  teto2 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto2.x = 500
-  teto2.y = -193
+  teto2 = display.newImage("images/chaoMeteorito.png", display.contentWidth, display.contentHeight)
+  teto2.x = 300
+  teto2.y = -50
   teto2.name = 'teto'
   physics.addBody(teto2, "static")
   scene.view:insert(teto2)
 
-  teto3 = display.newImage("images/metero.png", display.contentWidth, display.contentHeight)
-  teto3.x = 2300
-  teto3.y = -90
+  teto3 = display.newImage("images/chaoMeteorito.png", display.contentWidth, display.contentHeight)
+  teto3.x =  teto2.x + display.contentWidth + 250
+  teto3.y = -50
   teto3.name = 'teto'
   physics.addBody(teto3, "static")
   scene.view:insert(teto3)
@@ -272,7 +278,14 @@ function carregarImgsJogo( )
   toqueParaPausar = display.newImage("images/botaoPausar.png", display.contentWidth, display.contentHeight)
   toqueParaPausar.x = display.contentCenterX - 435
   toqueParaPausar.y = display.contentCenterY - 277
+  toqueParaPausar.alpha = 1
   scene.view:insert(toqueParaPausar)
+
+  toqueParaContinuar = display.newImage("images/botaoResume.png", display.contentWidth, display.contentHeight)
+  toqueParaContinuar.x = display.contentCenterX - 435
+  toqueParaContinuar.y = display.contentCenterY - 277
+  toqueParaContinuar.alpha = 0
+  scene.view:insert(toqueParaContinuar)
 end
 --------------------------------------------------------------------------------
 
@@ -282,7 +295,7 @@ end
 --------------------------------------------------------------------------------
 function carregarFoguete()
   foguete = display.newImage("images/nave.png", display.contentWidth, display.contentHeight)
-  foguete.x = 150
+  foguete.x = 160
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isFixedRotation = true
@@ -304,7 +317,7 @@ function carregarObjCombustivel()
   objCombustivel.name = 'combustivel'
   physics.addBody( objCombustivel, "dynamic" )
   objCombustivel.isSensor = true
-  transitionComb = transition.to( objCombustivel, {time = speed, x = -50, y = objCombustivel.y})
+  transitionComb = transition.to( objCombustivel, {time = speed, x = -50, y = objCombustivel.y, tag="pausaTransicao"})
   grupoCombComet:insert(objCombustivel)
 end
 --------------------------------------------------------------------------------
@@ -340,10 +353,6 @@ function adicionarDisplayDCP()
   combustivelTxt.x = display.contentCenterX + 240
   combustivelTxt.y = display.contentCenterY - 270
   scene.view:insert(combustivelTxt)
-  --displayDCP = display.newImage("images/displayCDP.png", display.contentWidth, display.contentHeight)
-  --displayDCP.x = display.contentCenterX
-  --displayDCP.y = display.contentCenterY + 280
-  --scene.view:insert(displayDCP)
 end
 --------------------------------------------------------------------------------
 
@@ -352,7 +361,7 @@ end
 -- Adicionar planeta por Distância
 --------------------------------------------------------------------------------
 function adicionarPlanetaPorDistancia()
-  if (distancia == 30) then
+  if (distancia == 20) then
     adicionarMarte()
   end
   if (distancia == 60) then
@@ -380,13 +389,13 @@ end
 function adicionarMarte()
   planeta = display.newImage("images/marte.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY - 20
+  planeta.y = display.contentCenterY + 10
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
     obj = nil
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
@@ -408,13 +417,13 @@ end
 function adicionarJupiter()
   planeta = display.newImage("images/jupiter.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY - 20
+  planeta.y = display.contentCenterY + 10
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
     obj = nil
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
@@ -440,7 +449,7 @@ function adicionarSaturno()
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 end
@@ -453,11 +462,11 @@ end
 function adicionarUrano()
   planeta = display.newImage("images/urano.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 30
+  planeta.y = display.contentCenterY + 10
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 end
@@ -470,13 +479,13 @@ end
 function adicionarNeturno()
   planeta = display.newImage("images/neturno.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 30
+  planeta.y = display.contentCenterY + 10
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
     obj = nil
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
 
@@ -498,11 +507,11 @@ end
 function adicionarPlutao()
   planeta = display.newImage("images/plutao.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 30
+  planeta.y = display.contentCenterY + 10
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
-  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita})
+  transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
   --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
   --Runtime:addEventListener("enterFrame", criarOrbita)
@@ -527,7 +536,7 @@ end
 -- Carregar cometas pela distância
 --------------------------------------------------------------------------------
 function carregarCometasIniciaisPorDistancia()
-  if (distancia > 0 and distancia < 33) then
+  if (distancia > 0 and distancia < 20) then
     cometa = display.newImage("images/cometaAzul.png")
     cometa.x = display.contentWidth + 150
     cometa.y = math.random(25, display.contentHeight - 50 )
@@ -535,7 +544,7 @@ function carregarCometasIniciaisPorDistancia()
     cometa.isFixedRotation = true
     physics.addBody(cometa, "dynamic")
     cometa.isSensor = true
-    transitionCometas = transition.to( cometa, {time = speed, x = -500, y = cometa.y})
+    transitionCometas = transition.to( cometa, {time = speed, x = -500, y = cometa.y, tag="pausaTransicao"})
     grupoCombComet:insert(cometa)
   end
 end
@@ -546,23 +555,23 @@ end
 -- Carregar asteroides pela distância
 --------------------------------------------------------------------------------
 function carregarCometasAsteroidesPorDistancia()
-    if (distancia > 43 and distancia < 57) then
+    if (distancia > 30 and distancia < 60) then
       adicionarAsteroidesMarrons()
       --contador = contador + 1
       print('asteroide marrom')
-    elseif (distancia > 73 and distancia < 97) then
+    elseif (distancia > 70 and distancia < 100) then
       adicionarCometasVermelhos()
       --contador = contador + 1
       print('asteroide vermelho')
-    elseif (distancia > 113 and distancia < 137) then
+    elseif (distancia > 110 and distancia < 140) then
       adicionarCometasBrancos()
       --contador = contador + 1
       print('asteroide branco')
-    elseif (distancia > 153 and distancia < 177) then
+    elseif (distancia > 150 and distancia < 180) then
       adicionarCometasAnis()
       --contador = contador + 1
       print('asteroide anil')
-    elseif (distancia > 193 and distancia < 227) then
+    elseif (distancia > 190 and distancia < 220) then
       adicionarAsteroidesCinzas()
       --contador = contador + 1
       print('asteroide cinza')
@@ -591,7 +600,7 @@ function adicionarAsteroidesMarrons()
   asteroide.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
-  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y, tag="pausaTransicao"})
 end
 --------------------------------------------------------------------------------
 
@@ -608,7 +617,7 @@ function adicionarCometasVermelhos()
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
   scene.view:insert(cometa)
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
 --------------------------------------------------------------------------------
 
@@ -625,7 +634,7 @@ function adicionarCometasBrancos()
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
   scene.view:insert(cometa)
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
 --------------------------------------------------------------------------------
 
@@ -642,7 +651,7 @@ function adicionarCometasAnis()
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
   scene.view:insert(cometa)
-  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y})
+  transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
 --------------------------------------------------------------------------------
 
@@ -665,7 +674,7 @@ function adicionarAsteroidesCinzas()
   asteroide.isSensor = true
   asteroide:play()
   grupoAsteroides:insert(asteroide)
-  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y})
+  transitionCometas = transition.to( asteroide, {time = speed, x = -400, y = asteroide.y, tag="pausaTransicao"})
 end
 --------------------------------------------------------------------------------
 
@@ -866,6 +875,66 @@ function criarGrupos( )
 end
 --------------------------------------------------------------------------------
 
+
+--------------------------------------------------------------------------------
+-- Pausa todo o jogo quando o usuário solicita
+--------------------------------------------------------------------------------
+function pausarJogoCompleto(event)
+  if (event.phase == "began" and toqueParaPausar.alpha == 1) then
+  	transition.pause("pausaTransicao") -- usar TAG!
+  	timer.pause(coc)
+    timer.pause(ccd)
+    timer.pause(add)
+    timer.pause(adc)
+    timer.pause(adp)
+    timer.pause(apd)
+    timer.pause(cad)
+    timer.pause(vcb)
+  	physics.pause()
+  	toqueParaPausar.alpha = 0
+  	toqueParaContinuar.alpha = 1
+  end
+end
+--------------------------------------------------------------------------------
+
+function pausarJogo(event)
+  if (atvBotao == false) then
+    Runtime:addEventListener("touch", pausarJogoCompleto)
+    atvBotao = true
+  else
+    toqueParaContinuar:removeEventListener("touch", retormarJogo)
+    Runtime:addEventListener("touch", pausarJogoCompleto)
+  end
+end
+
+--------------------------------------------------------------------------------
+-- Retoma ao jogo
+--------------------------------------------------------------------------------
+function retormarJogoCompleto(event)
+  if (event.phase == "began" and toqueParaContinuar.alpha == 1) then
+  	transition.resume("pausaTransicao") -- usar TAG!
+    timer.resume(coc)
+    timer.resume(ccd)
+    timer.resume(add)
+    timer.resume(adc)
+    timer.resume(adp)
+    timer.resume(apd)
+    timer.resume(cad)
+    timer.resume(vcb)
+  	physics.start(true)
+  	toqueParaPausar.alpha = 1
+  	toqueParaContinuar.alpha = 0
+  end
+end
+--------------------------------------------------------------------------------
+
+function retormarJogo(event)
+  if (atvBotao) then
+    toqueParaPausar:removeEventListener("touch", pausarJogo)
+    Runtime:addEventListener("touch", retormarJogoCompleto)
+    atvBotao = false
+  end
+end
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
