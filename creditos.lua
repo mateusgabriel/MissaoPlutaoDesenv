@@ -130,14 +130,14 @@ function carregarImgsCreditos( )
   ceuEstrelado2.alpha = 0
   scene.view:insert(ceuEstrelado2)
 
-  creditosTxt = display.newText("Créditos", display.contentWidth, display.contentHeight, "Rocket Script", 65)
+  creditosTxt = display.newText("Créditos", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 80)
   creditosTxt.x = display.contentCenterX
   creditosTxt.y = display.contentCenterY - 230
   scene.view:insert(creditosTxt)
 
   displayCreditos = display.newImage("images/displayCreditos.png", display.contentWidth, display.contentHeight)
   displayCreditos.x = display.contentCenterX
-  displayCreditos.y = display.contentCenterY
+  displayCreditos.y = display.contentCenterY + 10
   scene.view:insert(displayCreditos)
 
   btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentWidth, display.contentHeight)

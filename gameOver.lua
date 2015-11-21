@@ -148,11 +148,15 @@ function carregarImgsGameOver( )
   scene.view:insert(ceuEstrelado2)
 
   --gameOverTxt = display.newText("Game Over", display.contentCenterX, display.contentCenterY - 90, native.systemFontBold, 50)
-  gameOverTxt = display.newImage("images/fimDeJogo.png", display.contentCenterX, display.contentCenterY)
-  gameOverTxt.x = display.contentCenterX
-  gameOverTxt.y = display.contentCenterY - 200
-  scene.view:insert(gameOverTxt)
+  gameOver = display.newImage("images/displayFimDeJogo.png", display.contentCenterX, display.contentCenterY)
+  gameOver.x = display.contentCenterX
+  gameOver.y = display.contentCenterY
+  scene.view:insert(gameOver)
 
+  instrucoesTxt = display.newText("Fim de jogo!", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 80)
+  instrucoesTxt.x = display.contentCenterX
+  instrucoesTxt.y = display.contentCenterY - 230
+  scene.view:insert(instrucoesTxt)
 
   btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentCenterX, display.contentCenterY)
   btRetornarMenu.x = display.contentCenterX
