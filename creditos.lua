@@ -135,6 +135,11 @@ function carregarImgsCreditos( )
   creditosTxt.y = display.contentCenterY - 230
   scene.view:insert(creditosTxt)
 
+  displayCreditos = display.newImage("images/displayCreditos.png", display.contentWidth, display.contentHeight)
+  displayCreditos.x = display.contentCenterX
+  displayCreditos.y = display.contentCenterY
+  scene.view:insert(displayCreditos)
+
   btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentWidth, display.contentHeight)
   btRetornarMenu.x = display.contentCenterX - 380
   btRetornarMenu.y = display.contentCenterY + 235
