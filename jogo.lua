@@ -35,6 +35,7 @@ local combustivelTxt
 local toqueParaPausar
 local transitionCometas
 local toqueParaContinuar
+local toqueParaComecar
 local transitionPlanetas
 local grupoPlanetaEstilingue
 local cos = math.cos
@@ -97,7 +98,8 @@ function scene:create(event)
   carregarFoguete()
   adicionarDisplayDCP()
   criarGrupos()
-
+  --setupIns()
+  --pausarJogoCompletoAux()
 end
 --------------------------------------------------------------------------------
 
@@ -117,7 +119,7 @@ function scene:show(event)
     adp = timer.performWithDelay( 1000, adicionarPontos, 0 )
     add = timer.performWithDelay( 1000, adicionarDistancia, 0 )
     adc = timer.performWithDelay( 1000, adicionarCombustivel, 0 )
-    coc = timer.performWithDelay( 10000, carregarObjCombustivel, 0 )
+    coc = timer.performWithDelay( 7000, carregarObjCombustivel, 0 )
     apd = timer.performWithDelay( 1005, adicionarPlanetaPorDistancia, 0)
     pcp = timer.performWithDelay( 1005, perderCombustivelPontosPorDistancia, 0 )
     ccd = timer.performWithDelay( 1600, carregarCometasIniciaisPorDistancia, 15 )
@@ -126,6 +128,7 @@ function scene:show(event)
     background:addEventListener("touch", controlarFoguete)
     toqueParaPausar:addEventListener("touch", pausarJogo)
     toqueParaContinuar:addEventListener("touch", retormarJogo)
+    --toqueParaComecar:addEventListener("touch", retormarJogo)
     Runtime:addEventListener("enterFrame", ativarFoguete)
     Runtime:addEventListener("collision", onLocalCollision)
     Runtime:addEventListener("enterFrame", scrollEstrelas)
@@ -293,6 +296,11 @@ function carregarImgsJogo( )
   toqueParaContinuar.y = display.contentCenterY - 277
   toqueParaContinuar.alpha = 0
   scene.view:insert(toqueParaContinuar)
+
+  --toqueParaComecar = display.newImage("images/botaoComecar.png", display.contentWidth, display.contentHeight)
+  --toqueParaComecar.x = display.contentCenterX
+  --toqueParaComecar.y = display.contentCenterY
+  --scene.view:insert(toqueParaComecar)
 end
 --------------------------------------------------------------------------------
 
@@ -363,14 +371,20 @@ function adicionarDisplayDCP()
 end
 --------------------------------------------------------------------------------
 
+function setupIns( )
+  ins = display.newImage('images/botaoComecar.png', display.contentCenterX, display.contentCenterY)
+  transition.from(ins, {time = 200, alpha = 0.1, onComplete = function() timer.performWithDelay(2000, function()
+    transition.to(ins, {time = 200, alpha = 0.1, onComplete = function() display.remove(ins) ins = nil end}) end) end})
+  scene.view:insert(ins)
+end
 
 --------------------------------------------------------------------------------
 -- Carrega nome do planeta
 --------------------------------------------------------------------------------
 function carregarNomePlaneta(nomePlaneta)
- toqueTxt = display.newText(nomePlaneta, display.contentWidth, display.contentHeight, "Rocket Script", 36)
- toqueTxt.x = display.contentCenterX
- toqueTxt.y = display.contentCenterY
+ toqueTxt = display.newText(nomePlaneta, display.contentWidth, display.contentHeight, "Rocket Script", 45)
+ toqueTxt.x = display.contentCenterX + 230
+ toqueTxt.y = display.contentCenterY - 155
  toqueTxt.alpha = 0
  scene.view:insert(toqueTxt)
 end
@@ -383,9 +397,9 @@ end
 function carregarEfeitoNomePlaneta()
   if (toqueTxt ~= nil) then
     if (toqueTxt.alpha > 0) then
-        transition.to(toqueTxt, {time=1000, alpha=0})
+        transition.to(toqueTxt, {time=2000, alpha=0})
     else
-        transition.to(toqueTxt, {time=1000, alpha=1})
+        transition.to(toqueTxt, {time=2000, alpha=1})
     end
   end
 end
@@ -403,18 +417,28 @@ function adicionarPlanetaPorDistancia()
   end
   if (distancia == 60) then
     adicionarJupiter()
+    carregarNomePlaneta("Júpiter")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
   if (distancia == 100) then
     adicionarSaturno()
+    carregarNomePlaneta("Saturno")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
   if (distancia == 140) then
     adicionarUrano()
+    carregarNomePlaneta("Urano")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
   if (distancia == 180) then
     adicionarNeturno()
+    carregarNomePlaneta("Netuno")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
   if (distancia == 220) then
     adicionarPlutao()
+    carregarNomePlaneta("Plutão")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
 end
 --------------------------------------------------------------------------------
@@ -902,6 +926,19 @@ function criarGrupos( )
 end
 --------------------------------------------------------------------------------
 
+function pausarJogoCompletoAux()
+  	transition.pause("pausaTransicao") -- usar TAG!
+  	timer.pause(coc)
+    timer.pause(ccd)
+    timer.pause(add)
+    timer.pause(adc)
+    timer.pause(adp)
+    timer.pause(apd)
+    timer.pause(cad)
+    timer.pause(vcb)
+    --timer.pause(cen)
+  	physics.pause()
+end
 
 --------------------------------------------------------------------------------
 -- Pausa todo o jogo quando o usuário solicita
@@ -917,7 +954,7 @@ function pausarJogoCompleto(event)
     timer.pause(apd)
     timer.pause(cad)
     timer.pause(vcb)
-    timer.pause(cen)
+    --timer.pause(cen)
   	physics.pause()
   	toqueParaPausar.alpha = 0
   	toqueParaContinuar.alpha = 1
@@ -954,7 +991,7 @@ function retormarJogoCompleto(event)
     timer.resume(apd)
     timer.resume(cad)
     timer.resume(vcb)
-    timer.resume(cen)
+    --timer.resume(cen)
   	physics.start(true)
   	toqueParaPausar.alpha = 1
   	toqueParaContinuar.alpha = 0
