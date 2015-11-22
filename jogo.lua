@@ -21,6 +21,7 @@ local adp -- recebe o incrementador(adicionar) de pontos
 local adc -- recebe o incrementador(adicionar) do combustível
 local apd
 local vcb
+local cen
 --local cometa
 local foguete
 --local planeta
@@ -160,7 +161,9 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
-  Runtime:removeEventListener("touch", controlarFoguete)
+  toqueParaPausar:removeEventListener("touch", pausarJogo)
+  toqueParaContinuar:removeEventListener("touch", retormarJogo)
+  background:removeEventListener("touch", controlarFoguete)
   Runtime:removeEventListener("enterFrame", criarOrbita)
   Runtime:removeEventListener("enterFrame", ativarFoguete)
   Runtime:removeEventListener("enterFrame", scrollEstrelas)
@@ -212,6 +215,10 @@ function scene:destroy(event)
   if (vcb) then
     timer.cancel(vcb)
     vcb = nil
+  end
+  if (cen) then
+    timer.cancel(cen)
+    cen = nil
   end
   --composer.removeScene( "jogo" )
   -- Chamado antes da remoção de vista da cena ("sceneGroup")
@@ -358,11 +365,41 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Carrega nome do planeta
+--------------------------------------------------------------------------------
+function carregarNomePlaneta(nomePlaneta)
+ toqueTxt = display.newText(nomePlaneta, display.contentWidth, display.contentHeight, "Rocket Script", 36)
+ toqueTxt.x = display.contentCenterX
+ toqueTxt.y = display.contentCenterY
+ toqueTxt.alpha = 0
+ scene.view:insert(toqueTxt)
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carrega efeito no nome do planeta
+--------------------------------------------------------------------------------
+function carregarEfeitoNomePlaneta()
+  if (toqueTxt ~= nil) then
+    if (toqueTxt.alpha > 0) then
+        transition.to(toqueTxt, {time=1000, alpha=0})
+    else
+        transition.to(toqueTxt, {time=1000, alpha=1})
+    end
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
 -- Adicionar planeta por Distância
 --------------------------------------------------------------------------------
 function adicionarPlanetaPorDistancia()
   if (distancia == 20) then
     adicionarMarte()
+    carregarNomePlaneta("Marte")
+    cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
   end
   if (distancia == 60) then
     adicionarJupiter()
@@ -557,24 +594,14 @@ end
 function carregarCometasAsteroidesPorDistancia()
     if (distancia > 30 and distancia < 60) then
       adicionarAsteroidesMarrons()
-      --contador = contador + 1
-      print('asteroide marrom')
     elseif (distancia > 70 and distancia < 100) then
       adicionarCometasVermelhos()
-      --contador = contador + 1
-      print('asteroide vermelho')
     elseif (distancia > 110 and distancia < 140) then
       adicionarCometasBrancos()
-      --contador = contador + 1
-      print('asteroide branco')
     elseif (distancia > 150 and distancia < 180) then
       adicionarCometasAnis()
-      --contador = contador + 1
-      print('asteroide anil')
     elseif (distancia > 190 and distancia < 220) then
       adicionarAsteroidesCinzas()
-      --contador = contador + 1
-      print('asteroide cinza')
     else
       print('saindo de carregarCometasAsteroidesPorDistancia()')
     end
@@ -890,6 +917,7 @@ function pausarJogoCompleto(event)
     timer.pause(apd)
     timer.pause(cad)
     timer.pause(vcb)
+    timer.pause(cen)
   	physics.pause()
   	toqueParaPausar.alpha = 0
   	toqueParaContinuar.alpha = 1
@@ -897,15 +925,20 @@ function pausarJogoCompleto(event)
 end
 --------------------------------------------------------------------------------
 
-function pausarJogo(event)
+--------------------------------------------------------------------------------
+-- Função auxiliar para pausar o jogo
+--------------------------------------------------------------------------------
+function pausarJogo()
   if (atvBotao == false) then
-    Runtime:addEventListener("touch", pausarJogoCompleto)
+    toqueParaPausar:addEventListener("touch", pausarJogoCompleto)
     atvBotao = true
   else
-    toqueParaContinuar:removeEventListener("touch", retormarJogo)
-    Runtime:addEventListener("touch", pausarJogoCompleto)
+    toqueParaContinuar:removeEventListener("touch", retormarJogoCompleto)
+    toqueParaPausar:addEventListener("touch", pausarJogoCompleto)
   end
 end
+--------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 -- Retoma ao jogo
@@ -921,6 +954,7 @@ function retormarJogoCompleto(event)
     timer.resume(apd)
     timer.resume(cad)
     timer.resume(vcb)
+    timer.resume(cen)
   	physics.start(true)
   	toqueParaPausar.alpha = 1
   	toqueParaContinuar.alpha = 0
@@ -928,13 +962,18 @@ function retormarJogoCompleto(event)
 end
 --------------------------------------------------------------------------------
 
-function retormarJogo(event)
-  if (atvBotao) then
+
+--------------------------------------------------------------------------------
+-- Função auxiliar para retormar o jogo
+--------------------------------------------------------------------------------
+function retormarJogo()
+  if (atvBotao == true) then
     toqueParaPausar:removeEventListener("touch", pausarJogo)
-    Runtime:addEventListener("touch", retormarJogoCompleto)
-    atvBotao = false
+    toqueParaContinuar:addEventListener("touch", retormarJogoCompleto)
   end
 end
+--------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 -- Configuração de transição entre cenas
