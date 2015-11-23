@@ -318,6 +318,12 @@ function carregarImgsJogo( )
   ganhoCPTxt = display.newText("+ 25", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 28)
   ganhoCPTxt.alpha = 0
   scene.view:insert(ganhoCPTxt)
+
+  parabenstxt = display.newImage("images/parabens.png", display.contentWidth, display.contentHeight)
+  parabenstxt.alpha = 0
+  parabenstxt.x = display.contentCenterX
+  parabenstxt.y = display.contentCenterY
+  scene.view:insert(parabenstxt)
 end
 --------------------------------------------------------------------------------
 
@@ -340,7 +346,6 @@ function carregarFoguete()
   foguete.isSensor = true
   foguete:play()
   grupoFoguete:insert(foguete)
-  --grupoFoguete:insert(foguete)
 end
 --------------------------------------------------------------------------------
 
@@ -394,12 +399,6 @@ function adicionarDisplayDCP()
 end
 --------------------------------------------------------------------------------
 
---[[function setupIns( )
-  ins = display.newImage('images/botaoComecar.png', display.contentCenterX, display.contentCenterY)
-  transition.from(ins, {time = 200, alpha = 0.1, onComplete = function() timer.performWithDelay(2000, function()
-    transition.to(ins, {time = 200, alpha = 0.1, onComplete = function() display.remove(ins) ins = nil end}) end) end})
-  scene.view:insert(ins)
-end]]
 
 --------------------------------------------------------------------------------
 -- Carrega nome do planeta
@@ -477,6 +476,14 @@ function adicionarPlanetaPorDistancia()
     adicionarPlutao()
     carregarNomePlaneta("Plutão")
     cen = timer.performWithDelay(2000, carregarEfeitoNomePlaneta, 2)
+  end
+
+  -- Para jogo -> Missão concluída!!!
+  if (distancia == 10) then
+    pausarFimDeJogo()
+    --carregarTextoParabens()
+    teste = timer.performWithDelay(2000, carregarEfeitoTextoParabens, 1)
+    --carregarTextoAgradecimento()
   end
 end
 --------------------------------------------------------------------------------
@@ -839,6 +846,9 @@ end
 --------------------------------------------------------------------------------
 
 
+--------------------------------------------------------------------------------
+-- Sincroniza a explosão à posição do foguete
+--------------------------------------------------------------------------------
 function explodirNave()
   explosao.x = foguete.x
   explosao.y = foguete.y
@@ -846,13 +856,19 @@ function explodirNave()
   explosao:play()
   foguete.alpha = 0
 end
+--------------------------------------------------------------------------------
 
+
+--------------------------------------------------------------------------------
+-- Mostra ganho de combustível e pontos na tela (+25)
+--------------------------------------------------------------------------------
 function mostrarGanhoCP()
   ganhoCPTxt.x = foguete.x
   ganhoCPTxt.y = foguete.y
   ganhoCPTxt.alpha = 1
   cep = timer.performWithDelay(2000, carregarEfeitoGanhoCP, 1)
 end
+--------------------------------------------------------------------------------
 
 
 --------------------------------------------------------------------------------
@@ -1015,6 +1031,21 @@ function pausarJogoCompleto(event)
 end
 --------------------------------------------------------------------------------
 
+function pausarFimDeJogo()
+  	transition.pause("pausaTransicao") -- usar TAG!
+  	timer.pause(coc)
+    timer.pause(ccd)
+    timer.pause(add)
+    timer.pause(adc)
+    timer.pause(adp)
+    timer.pause(apd)
+    timer.pause(cad)
+    timer.pause(vcb)
+    --timer.pause(cen)
+  	physics.pause()
+end
+----
+
 --------------------------------------------------------------------------------
 -- Função auxiliar para pausar o jogo
 --------------------------------------------------------------------------------
@@ -1060,6 +1091,21 @@ function retormarJogo()
   if (atvBotao == true) then
     toqueParaPausar:removeEventListener("touch", pausarJogo)
     toqueParaContinuar:addEventListener("touch", retormarJogoCompleto)
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carrega efeito no nome do planeta
+--------------------------------------------------------------------------------
+function carregarEfeitoTextoParabens()
+  if (parabenstxt ~= nil) then
+    if (parabenstxt.alpha > 0) then
+        transition.to(parabenstxt, {time=1000, alpha=0})
+    else
+        transition.to(parabenstxt, {time=1000, alpha=1})
+    end
   end
 end
 --------------------------------------------------------------------------------
