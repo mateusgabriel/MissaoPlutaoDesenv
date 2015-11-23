@@ -35,6 +35,9 @@ function scene:create(event)
   local sceneGroup = self.view
   carregarImgsMenu()
 
+  local somSubMenu = audio.loadStream( "sons/boss.ogg" )
+  audio.play(somSubMenu, {loops = -1, channel = 1})
+  --audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -90,6 +93,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  audio.stop(1)
   display.remove(background)
   if (cce) then
     timer.cancel(cce)

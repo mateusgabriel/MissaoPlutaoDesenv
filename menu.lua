@@ -36,6 +36,9 @@ function scene:create(event)
   criarGrupos()
   carregarTextoToque()
 
+  local somMenu = audio.loadStream( "sons/through space.ogg" )
+  audio.play(somMenu, {loops = -1, channel = 1})
+  audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -88,6 +91,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  audio.stop(1)
   display.remove(background)
   if (cce) then
     timer.cancel(cce)
@@ -213,6 +217,9 @@ local configTransicaoSubMenu = {
 -- Função que chama cena de submenu do jogo
 --------------------------------------------------------------------------------
 function carregarSubMenu( )
+  --local somBG = audio.loadStream( "sons/button-19.mp3" )
+  --audio.play(somBG, {loops = -1, channel = 1})
+  --audio.setVolume( 0.50 , { channel=1 })
   composer.removeScene("menu")
 	composer.gotoScene("submenu", configTransicaoSubMenu)
 end

@@ -29,6 +29,9 @@ function scene:create(event)
   carregarImgsCreditos()
   --criarGrupos()
 
+  local somCreditos = audio.loadStream( "sons/credits.ogg" )
+  audio.play(somCreditos, {loops = -1, channel = 1})
+  --audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -81,6 +84,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  audio.stop(1)
   display.remove(background)
   if (cce) then
     timer.cancel(cce)
@@ -136,8 +140,8 @@ function carregarImgsCreditos( )
   scene.view:insert(creditosTxt)
 
   displayCreditos = display.newImage("images/displayCreditos.png", display.contentWidth, display.contentHeight)
-  displayCreditos.x = display.contentCenterX
-  displayCreditos.y = display.contentCenterY + 10
+  displayCreditos.x = display.contentCenterX + 10
+  displayCreditos.y = display.contentCenterY + 70
   scene.view:insert(displayCreditos)
 
   btRetornarMenu = display.newImage("images/botaoRetornaMenu.png", display.contentWidth, display.contentHeight)

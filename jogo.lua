@@ -22,6 +22,7 @@ local adc -- recebe o incrementador(adicionar) do combustível
 local apd
 local vcb
 local cen
+local cep
 --local cometa
 local foguete
 --local planeta
@@ -49,7 +50,7 @@ local atvBotao = false
 local atvFoguete = false
 local atvOrbita = true
 local aplicaForca = - 60
-local speed = 7000
+local speed = 6000
 local speedPlanetas = 20000
 local speedEstrelas = 3
 local gameOver = {}
@@ -95,11 +96,14 @@ local carregarCometasAsteroidesPorDistancia = {}
 function scene:create(event)
   local sceneGroup = self.view
   carregarImgsJogo()
-  carregarFoguete()
   adicionarDisplayDCP()
   criarGrupos()
+  carregarFoguete()
   --setupIns()
-  --pausarJogoCompletoAux()
+
+  local somMenu = audio.loadStream( "sons/Spacearray_0.ogg" )
+  audio.play(somMenu, {loops = -1, channel = 1})
+  audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -164,6 +168,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  audio.stop(1)
   toqueParaPausar:removeEventListener("touch", pausarJogo)
   toqueParaContinuar:removeEventListener("touch", retormarJogo)
   background:removeEventListener("touch", controlarFoguete)
@@ -180,6 +185,7 @@ function scene:destroy(event)
   display.remove(planeta)
   display.remove(estilingue)
   display.remove(background)
+  display.remove(grupoFoguete)
   display.remove(grupoCombComet)
   display.remove(grupoAsteroides)
   display.remove(grupoPlanetaEstilingue)
@@ -297,10 +303,21 @@ function carregarImgsJogo( )
   toqueParaContinuar.alpha = 0
   scene.view:insert(toqueParaContinuar)
 
-  --toqueParaComecar = display.newImage("images/botaoComecar.png", display.contentWidth, display.contentHeight)
-  --toqueParaComecar.x = display.contentCenterX
-  --toqueParaComecar.y = display.contentCenterY
-  --scene.view:insert(toqueParaComecar)
+  local options = { width = 64, height = 64, numFrames = 16}
+  local playerSheet = graphics.newImageSheet( "images/explosaoSprite.png", options )
+  local sequenceData = {
+    { name = "explosao", start = 1, count = 16 , time = 1500, loopCount = 0}
+  }
+  explosao = display.newSprite( playerSheet, sequenceData )
+  explosao.x = display.contentCenterX
+  explosao.y = display.contentCenterY
+  explosao.name = 'explosao'
+  explosao.alpha = 0
+  scene.view:insert(explosao)
+
+  ganhoCPTxt = display.newText("+ 25", display.contentWidth, display.contentHeight, "Visitor TT1 BRK", 28)
+  ganhoCPTxt.alpha = 0
+  scene.view:insert(ganhoCPTxt)
 end
 --------------------------------------------------------------------------------
 
@@ -309,14 +326,20 @@ end
 -- Carregar foguete
 --------------------------------------------------------------------------------
 function carregarFoguete()
-  foguete = display.newImage("images/nave.png", display.contentWidth, display.contentHeight)
+  local options = { width = 65, height = 43, numFrames = 4}
+  local playerSheet = graphics.newImageSheet( "images/fogueteSprite.png", options )
+  local sequenceData = {
+    { name = "voar", start = 1, count = 4 , time = 300, loopCount = 0}
+  }
+  foguete = display.newSprite( playerSheet, sequenceData )
   foguete.x = 160
   foguete.y = 200
   foguete.name = 'foguete'
   foguete.isFixedRotation = true
   physics.addBody(foguete, "dynamic")
   foguete.isSensor = true
-  scene.view:insert(foguete)
+  foguete:play()
+  grupoFoguete:insert(foguete)
   --grupoFoguete:insert(foguete)
 end
 --------------------------------------------------------------------------------
@@ -371,20 +394,20 @@ function adicionarDisplayDCP()
 end
 --------------------------------------------------------------------------------
 
-function setupIns( )
+--[[function setupIns( )
   ins = display.newImage('images/botaoComecar.png', display.contentCenterX, display.contentCenterY)
   transition.from(ins, {time = 200, alpha = 0.1, onComplete = function() timer.performWithDelay(2000, function()
     transition.to(ins, {time = 200, alpha = 0.1, onComplete = function() display.remove(ins) ins = nil end}) end) end})
   scene.view:insert(ins)
-end
+end]]
 
 --------------------------------------------------------------------------------
 -- Carrega nome do planeta
 --------------------------------------------------------------------------------
 function carregarNomePlaneta(nomePlaneta)
- toqueTxt = display.newText(nomePlaneta, display.contentWidth, display.contentHeight, "Rocket Script", 45)
- toqueTxt.x = display.contentCenterX + 230
- toqueTxt.y = display.contentCenterY - 155
+ toqueTxt = display.newText(nomePlaneta, display.contentWidth, display.contentHeight, "Rocket Script", 50)
+ toqueTxt.x = display.contentCenterX + 250
+ toqueTxt.y = display.contentCenterY - 165
  toqueTxt.alpha = 0
  scene.view:insert(toqueTxt)
 end
@@ -400,6 +423,21 @@ function carregarEfeitoNomePlaneta()
         transition.to(toqueTxt, {time=2000, alpha=0})
     else
         transition.to(toqueTxt, {time=2000, alpha=1})
+    end
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carrega efeito ao pegar combustível
+--------------------------------------------------------------------------------
+function carregarEfeitoGanhoCP()
+  if (ganhoCPTxt ~= nil) then
+    if (ganhoCPTxt.alpha > 0) then
+        transition.to(ganhoCPTxt, {time=500, alpha=0})
+    else
+        transition.to(ganhoCPTxt, {time=500, alpha=1})
     end
   end
 end
@@ -450,7 +488,7 @@ end
 function adicionarMarte()
   planeta = display.newImage("images/marte.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 10
+  planeta.y = display.contentCenterY + 15
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
@@ -478,7 +516,7 @@ end
 function adicionarJupiter()
   planeta = display.newImage("images/jupiter.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 10
+  planeta.y = display.contentCenterY + 15
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
@@ -523,7 +561,7 @@ end
 function adicionarUrano()
   planeta = display.newImage("images/urano.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 10
+  planeta.y = display.contentCenterY + 15
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
@@ -540,7 +578,7 @@ end
 function adicionarNeturno()
   planeta = display.newImage("images/neturno.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 10
+  planeta.y = display.contentCenterY + 15
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
     Runtime:removeEventListener("enterFrame", criarOrbita)
@@ -563,17 +601,16 @@ end
 
 
 --------------------------------------------------------------------------------
--- Adiciona planeta Neturno
+-- Adiciona planeta Plutão
 --------------------------------------------------------------------------------
 function adicionarPlutao()
   planeta = display.newImage("images/plutao.png")
   planeta.x = display.contentWidth + 150
-  planeta.y = display.contentCenterY + 10
+  planeta.y = display.contentCenterY + 15
   local cancelaOrbita = function(obj)
     transition.cancel(transitionPlanetas)
   end
   transitionPlanetas = transition.to( planeta, {time = speedPlanetas, x = -400, y = planeta.y, onComplete = cancelaOrbita, tag="pausaTransicao"})
-  --physics.addBody(planeta, "dynamic")
   grupoPlanetaEstilingue:insert(planeta)
   --Runtime:addEventListener("enterFrame", criarOrbita)
 end
@@ -737,7 +774,7 @@ function verificaCombustivel()
   if (combustivel == 0) then
     print('Seu combustível se esgotou :/')
     gameOver()
-  elseif(distancia <= 50) then
+  elseif(combustivel <= 50) then
     print('Seu combustível está se esgotando!')
   end
 end
@@ -802,26 +839,55 @@ end
 --------------------------------------------------------------------------------
 
 
+function explodirNave()
+  explosao.x = foguete.x
+  explosao.y = foguete.y
+  explosao.alpha = 1
+  explosao:play()
+  foguete.alpha = 0
+end
+
+function mostrarGanhoCP()
+  ganhoCPTxt.x = foguete.x
+  ganhoCPTxt.y = foguete.y
+  ganhoCPTxt.alpha = 1
+  cep = timer.performWithDelay(2000, carregarEfeitoGanhoCP, 1)
+end
+
+
 --------------------------------------------------------------------------------
 -- Verifica as colisões ocorridas durante a execução do programa
 --------------------------------------------------------------------------------
 function onLocalCollision(event)
 	if (event.phase == "began") then
     if (event.object1.name == "foguete" and event.object2.name == "combustivel") then
-		    event.object2:removeSelf()
-        ganharCP()
+	    event.object2:removeSelf()
+      mostrarGanhoCP()
+      ganharCP()
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
-        gameOver()
+      event.object1.bodyType = "static"
+      explodirNave()
+      gameOver()
     elseif (event.object1.name == "cometa" and event.object2.name == "foguete") then
-        gameOver()
+      event.object2.bodyType = "static"
+      explodirNave()
+      gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "teto") then
-        gameOver()
+      event.object1.bodyType = "static"
+      explodirNave()
+      gameOver()
     elseif (event.object1.name == "teto" and event.object2.name == "foguete") then
-        gameOver()
+      event.object2.bodyType = "static"
+      explodirNave()
+      gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
-        gameOver()
+      event.object1.bodyType = "static"
+      explodirNave()
+      gameOver()
     elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
-        gameOver()
+      event.object2.bodyType = "static"
+      explodirNave()
+      gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
       event.object2:removeSelf()
@@ -854,7 +920,7 @@ end
 function aumentarVelocidade()
   speedEstrelas = speedEstrelas + 2
   speed = speed + 3
-  distancia = distancia + 2
+  --distancia = distancia + 2
 end
 --------------------------------------------------------------------------------
 
@@ -915,30 +981,17 @@ end
 -- Cria grupo(s) para unir elementos da tela
 --------------------------------------------------------------------------------
 function criarGrupos( )
-  --grupoFoguete = display.newGroup( )
   grupoCombComet = display.newGroup()
   grupoAsteroides = display.newGroup()
   grupoPlanetaEstilingue = display.newGroup()
-  --scene.view:insert(grupoFoguete)
+  grupoFoguete = display.newGroup( )
   scene.view:insert(grupoCombComet)
   scene.view:insert(grupoPlanetaEstilingue)
   scene.view:insert(grupoAsteroides)
+  scene.view:insert(grupoFoguete)
 end
 --------------------------------------------------------------------------------
 
-function pausarJogoCompletoAux()
-  	transition.pause("pausaTransicao") -- usar TAG!
-  	timer.pause(coc)
-    timer.pause(ccd)
-    timer.pause(add)
-    timer.pause(adc)
-    timer.pause(adp)
-    timer.pause(apd)
-    timer.pause(cad)
-    timer.pause(vcb)
-    --timer.pause(cen)
-  	physics.pause()
-end
 
 --------------------------------------------------------------------------------
 -- Pausa todo o jogo quando o usuário solicita

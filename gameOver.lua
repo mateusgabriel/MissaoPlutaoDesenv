@@ -42,7 +42,10 @@ function scene:create(event)
   calcularResultadoFinal()
   criarGrupos()
 
-  resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX + 230, display.contentCenterY + 83, "Visitor TT1 BRK", 50)
+  local somMenu = audio.loadStream( "sons/level4.ogg" )
+  audio.play(somMenu, {loops = -1, channel = 1})
+
+  resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX + 230, display.contentCenterY + 79, "Visitor TT1 BRK", 50)
   scene.view:insert(resultadoFinalTxt)
 end
 --------------------------------------------------------------------------------
@@ -98,6 +101,7 @@ end
 function scene:destroy(event)
   local sceneGroup = self.view
 
+  audio.stop(1)
   display.remove(background)
   if (cce) then
     timer.cancel(cce)
@@ -172,13 +176,13 @@ function carregarImgsGameOver( )
   btSairJogo.y = display.contentCenterY + 235
   scene.view:insert(btSairJogo)
 
-  combustivelConsumidoTxt = display.newText('' .. combustivel, display.contentCenterX + 240, display.contentCenterY - 75, "Visitor TT1 BRK", 42)
+  combustivelConsumidoTxt = display.newText('' .. combustivel, display.contentCenterX + 240, display.contentCenterY + 8, "Visitor TT1 BRK", 42)
   scene.view:insert(combustivelConsumidoTxt)
 
-  distanciaPercorridaTxt = display.newText('' .. distancia, display.contentCenterX + 240, display.contentCenterY - 30, "Visitor TT1 BRK", 42)
+  distanciaPercorridaTxt = display.newText('' .. distancia, display.contentCenterX + 240, display.contentCenterY - 35, "Visitor TT1 BRK", 42)
   scene.view:insert(distanciaPercorridaTxt)
 
-  pontosGanhosTxt = display.newText('' .. pontos, display.contentCenterX + 240, display.contentCenterY + 13, "Visitor TT1 BRK", 42)
+  pontosGanhosTxt = display.newText('' .. pontos, display.contentCenterX + 240, display.contentCenterY - 75, "Visitor TT1 BRK", 42)
   scene.view:insert(pontosGanhosTxt)
 end
 --------------------------------------------------------------------------------
@@ -262,8 +266,8 @@ function retornarMenu( )
   composer.removeScene("gameOver")
 	composer.gotoScene("submenu", configTransicaoJogoSubMenu)
   distancia = 0
-  distanciaAux = 250
-  combustivel = 1000
+  distanciaAux = 10
+  combustivel = 100
   pontos = 0
 end
 --------------------------------------------------------------------------------
