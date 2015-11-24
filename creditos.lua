@@ -30,7 +30,7 @@ function scene:create(event)
   --criarGrupos()
 
   local somCreditos = audio.loadStream( "sons/credits.ogg" )
-  audio.play(somCreditos, {loops = -1, channel = 1})
+  audio.play(somCreditos, {loops = -1, channel = 1, fadein = 2000})
   --audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ function scene:create(event)
   carregarImgsMenu()
 
   local somSubMenu = audio.loadStream( "sons/boss.ogg" )
-  audio.play(somSubMenu, {loops = -1, channel = 1})
+  audio.play(somSubMenu, {loops = -1, channel = 1, fadein = 1000})
   --audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------

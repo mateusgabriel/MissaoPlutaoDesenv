@@ -37,7 +37,7 @@ function scene:create(event)
   carregarTextoToque()
 
   local somMenu = audio.loadStream( "sons/through space.ogg" )
-  audio.play(somMenu, {loops = -1, channel = 1})
+  audio.play(somMenu, {loops = -1, channel = 1, fadein=1000})
   audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------

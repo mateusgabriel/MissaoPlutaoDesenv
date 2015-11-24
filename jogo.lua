@@ -102,7 +102,7 @@ function scene:create(event)
   --setupIns()
 
   local somMenu = audio.loadStream( "sons/Spacearray_0.ogg" )
-  audio.play(somMenu, {loops = -1, channel = 1})
+  audio.play(somMenu, {loops = -1, channel = 1, fadein = 2000})
   audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
@@ -319,11 +319,19 @@ function carregarImgsJogo( )
   ganhoCPTxt.alpha = 0
   scene.view:insert(ganhoCPTxt)
 
-  parabenstxt = display.newImage("images/parabens.png", display.contentWidth, display.contentHeight)
-  parabenstxt.alpha = 0
-  parabenstxt.x = display.contentCenterX
-  parabenstxt.y = display.contentCenterY
-  scene.view:insert(parabenstxt)
+  parabensTxt = display.newImage("images/parabens.png", display.contentWidth, display.contentHeight)
+  parabensTxt.alpha = 0
+  parabensTxt.x = display.contentCenterX + 190
+  parabensTxt.y = display.contentCenterY - 50
+  parabensTxt.name = 'parabens'
+  scene.view:insert(parabensTxt)
+
+  agradecimentoTxt = display.newImage("images/agradecimento.png", display.contentWidth, display.contentHeight)
+  agradecimentoTxt.alpha = 0
+  agradecimentoTxt.x = display.contentCenterX + 190
+  agradecimentoTxt.y = display.contentCenterY + 40
+  agradecimentoTxt.name = 'agradecimento'
+  scene.view:insert(agradecimentoTxt)
 end
 --------------------------------------------------------------------------------
 
@@ -479,11 +487,18 @@ function adicionarPlanetaPorDistancia()
   end
 
   -- Para jogo -> Missão concluída!!!
-  if (distancia == 10) then
-    pausarFimDeJogo()
-    --carregarTextoParabens()
-    teste = timer.performWithDelay(2000, carregarEfeitoTextoParabens, 1)
-    --carregarTextoAgradecimento()
+  if (distancia == 230) then
+    audio.stop(1)
+    local function pontuacaoFinal (event)
+      if (event.completed) then
+        gameOver()
+      end
+    end
+    local somGanhou = audio.loadStream("sons/1x level win.ogg")
+    audio.play(somGanhou, {loop=-1, fadein = 2000, onComplete = pontuacaoFinal})
+    pausarChegadaPlutao()
+    cet = timer.performWithDelay(800, carregarEfeitoTextoParabens, 20)
+    ceta = timer.performWithDelay(2000, carregarEfeitoTextoAgradecimento, 1)
   end
 end
 --------------------------------------------------------------------------------
@@ -642,13 +657,20 @@ end
 --------------------------------------------------------------------------------
 function carregarCometasIniciaisPorDistancia()
   if (distancia > 0 and distancia < 20) then
-    cometa = display.newImage("images/cometaAzul.png")
+    local options = { width = 283, height = 63, numFrames = 4}
+    local playerSheet = graphics.newImageSheet( "images/cometaAzulSprite.png", options )
+    local sequenceData = {
+      { name = "rotacao", start = 1, count = 4 , time = 1000, loopCount = 0}
+    }
+    cometa = display.newSprite( playerSheet, sequenceData )
+    --cometa = display.newImage("images/cometaAzul.png")
     cometa.x = display.contentWidth + 150
     cometa.y = math.random(25, display.contentHeight - 50 )
     cometa.name = 'cometa'
     cometa.isFixedRotation = true
     physics.addBody(cometa, "dynamic")
     cometa.isSensor = true
+    cometa:play()
     transitionCometas = transition.to( cometa, {time = speed, x = -500, y = cometa.y, tag="pausaTransicao"})
     grupoCombComet:insert(cometa)
   end
@@ -1010,6 +1032,25 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Pausa todo quando o foguete chega em Plutão
+--------------------------------------------------------------------------------
+function pausarChegadaPlutao()
+  	transition.pause("pausaTransicao") -- usar TAG!
+  	timer.pause(coc)
+    timer.pause(ccd)
+    timer.pause(add)
+    timer.pause(adc)
+    timer.pause(adp)
+    timer.pause(apd)
+    timer.pause(cad)
+    timer.pause(vcb)
+    --timer.pause(cen)
+  	physics.pause()
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
 -- Pausa todo o jogo quando o usuário solicita
 --------------------------------------------------------------------------------
 function pausarJogoCompleto(event)
@@ -1031,20 +1072,6 @@ function pausarJogoCompleto(event)
 end
 --------------------------------------------------------------------------------
 
-function pausarFimDeJogo()
-  	transition.pause("pausaTransicao") -- usar TAG!
-  	timer.pause(coc)
-    timer.pause(ccd)
-    timer.pause(add)
-    timer.pause(adc)
-    timer.pause(adp)
-    timer.pause(apd)
-    timer.pause(cad)
-    timer.pause(vcb)
-    --timer.pause(cen)
-  	physics.pause()
-end
-----
 
 --------------------------------------------------------------------------------
 -- Função auxiliar para pausar o jogo
@@ -1097,14 +1124,29 @@ end
 
 
 --------------------------------------------------------------------------------
--- Carrega efeito no nome do planeta
+-- Carrega efeito no nome Parabéns
 --------------------------------------------------------------------------------
 function carregarEfeitoTextoParabens()
-  if (parabenstxt ~= nil) then
-    if (parabenstxt.alpha > 0) then
-        transition.to(parabenstxt, {time=1000, alpha=0})
+  if (parabensTxt ~= nil) then
+    if (parabensTxt.alpha > 0) then
+        transition.to(parabensTxt, {time=100, alpha=0})
     else
-        transition.to(parabenstxt, {time=1000, alpha=1})
+        transition.to(parabensTxt, {time=100, alpha=1})
+    end
+  end
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Carrega efeito no nome agradecimento
+--------------------------------------------------------------------------------
+function carregarEfeitoTextoAgradecimento()
+  if (agradecimentoTxt ~= nil) then
+    if (agradecimentoTxt.alpha > 0) then
+        transition.to(agradecimentoTxt, {time=1000, alpha=0})
+    else
+        transition.to(agradecimentoTxt, {time=1000, alpha=1})
     end
   end
 end
