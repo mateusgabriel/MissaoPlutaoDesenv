@@ -50,7 +50,7 @@ local atvBotao = false
 local atvFoguete = false
 local atvOrbita = true
 local aplicaForca = - 60
-local speed = 6000
+local speed = 7000
 local speedPlanetas = 20000
 local speedEstrelas = 3
 local gameOver = {}
@@ -487,7 +487,7 @@ function adicionarPlanetaPorDistancia()
   end
 
   -- Para jogo -> Missão concluída!!!
-  if (distancia == 230) then
+  if (distancia == 231) then
     audio.stop(1)
     local function pontuacaoFinal (event)
       if (event.completed) then
@@ -660,7 +660,7 @@ function carregarCometasIniciaisPorDistancia()
     local options = { width = 283, height = 63, numFrames = 4}
     local playerSheet = graphics.newImageSheet( "images/cometaAzulSprite.png", options )
     local sequenceData = {
-      { name = "rotacao", start = 1, count = 4 , time = 1000, loopCount = 0}
+      { name = "transitar", start = 1, count = 4 , time = 1000, loopCount = 0}
     }
     cometa = display.newSprite( playerSheet, sequenceData )
     --cometa = display.newImage("images/cometaAzul.png")
@@ -726,13 +726,20 @@ end
 -- Adicionar cometas vermelhos (Júpiter -> Saturno)
 --------------------------------------------------------------------------------
 function adicionarCometasVermelhos()
-  cometa = display.newImage("images/cometaVermelho.png")
+  local options = { width = 283, height = 63, numFrames = 4}
+  local playerSheet = graphics.newImageSheet( "images/cometaVermelhoSprite.png", options )
+  local sequenceData = {
+    { name = "transitar", start = 1, count = 4 , time = 1000, loopCount = 0}
+  }
+  cometa = display.newSprite( playerSheet, sequenceData )
+  --cometa = display.newImage("images/cometaVermelho.png")
   cometa.x = display.contentWidth + 150
   cometa.y = math.random(20, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
+  cometa:play()
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
@@ -743,13 +750,20 @@ end
 -- Adicionar cometas brancos (Saturno -> Urano)
 --------------------------------------------------------------------------------
 function adicionarCometasBrancos()
-  cometa = display.newImage("images/cometaBranco.png")
+  local options = { width = 279, height = 57, numFrames = 4}
+  local playerSheet = graphics.newImageSheet( "images/cometaBrancoSprite.png", options )
+  local sequenceData = {
+    { name = "transitar", start = 1, count = 4 , time = 1000, loopCount = 0}
+  }
+  cometa = display.newSprite( playerSheet, sequenceData )
+  --cometa = display.newImage("images/cometaBranco.png")
   cometa.x = display.contentWidth + 150
   cometa.y = math.random(25, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
+  cometa:play()
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
@@ -760,13 +774,20 @@ end
 -- Adicionar cometas rojões (Urano -> Neturno)
 --------------------------------------------------------------------------------
 function adicionarCometasAnis()
-  cometa = display.newImage("images/cometaAnil.png")
+  local options = { width = 199, height = 104, numFrames = 4}
+  local playerSheet = graphics.newImageSheet( "images/cometaAnilSprite.png", options )
+  local sequenceData = {
+    { name = "transitar", start = 1, count = 4 , time = 1000, loopCount = 0}
+  }
+  cometa = display.newSprite( playerSheet, sequenceData )
+  --cometa = display.newImage("images/cometaAnil.png")
   cometa.x = display.contentWidth + 150
   cometa.y = math.random(25, display.contentHeight - 50 )
   cometa.name = 'cometa'
   cometa.isFixedRotation = true
   physics.addBody(cometa, "dynamic")
   cometa.isSensor = true
+  cometa:play()
   scene.view:insert(cometa)
   transitionCometas = transition.to( cometa, {time = speed, x = -400, y = cometa.y, tag="pausaTransicao"})
 end
