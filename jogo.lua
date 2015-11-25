@@ -103,7 +103,6 @@ function scene:create(event)
 
   local somMenu = audio.loadStream( "sons/Spacearray_0.ogg" )
   audio.play(somMenu, {loops = -1, channel = 1, fadein = 2000})
-  audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -940,10 +939,14 @@ function onLocalCollision(event)
       explodirNave()
       gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
+      local somColisao = audio.loadSound( "sons/slight_distant_explosion.mp3" )
+      audio.play(somColisao)
       event.object1.bodyType = "static"
       explodirNave()
       gameOver()
     elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
+      local somColisao = audio.loadSound( "sons/slight_distant_explosion.mp3" )
+      audio.play(somColisao)
       event.object2.bodyType = "static"
       explodirNave()
       gameOver()
