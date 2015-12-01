@@ -31,7 +31,7 @@ function scene:create(event)
 
   local somCreditos = audio.loadStream( "sons/credits.ogg" )
   audio.play(somCreditos, {loops = -1, channel = 1, fadein = 2000})
-  --audio.setVolume( 0.50 , { channel=1 })
+  audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 

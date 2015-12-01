@@ -103,6 +103,7 @@ function scene:create(event)
 
   local somMenu = audio.loadStream( "sons/Spacearray_0.ogg" )
   audio.play(somMenu, {loops = -1, channel = 1, fadein = 2000})
+  audio.setVolume( 0.50 , { channel=1 })
 end
 --------------------------------------------------------------------------------
 
@@ -914,6 +915,17 @@ end
 
 
 --------------------------------------------------------------------------------
+-- Executa a explosão da nave
+--------------------------------------------------------------------------------
+function somExplosao()
+  somColisao = audio.loadStream("sons/slight_distant_explosion.mp3")
+  audio.play(somColisao)
+  audio.setVolume( 0.50 , { channel=1 })
+end
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
 -- Verifica as colisões ocorridas durante a execução do programa
 --------------------------------------------------------------------------------
 function onLocalCollision(event)
@@ -925,30 +937,32 @@ function onLocalCollision(event)
     elseif (event.object1.name == "foguete" and event.object2.name == "cometa") then
       event.object1.bodyType = "static"
       explodirNave()
+      somExplosao()
       gameOver()
     elseif (event.object1.name == "cometa" and event.object2.name == "foguete") then
-      event.object2.bodyType = "static"
+      event.object1.bodyType = "static"
       explodirNave()
+      somExplosao()
       gameOver()
     elseif (event.object1.name == "foguete" and event.object2.name == "teto") then
       event.object1.bodyType = "static"
       explodirNave()
+      somExplosao()
       gameOver()
     elseif (event.object1.name == "teto" and event.object2.name == "foguete") then
-      event.object2.bodyType = "static"
-      explodirNave()
-      gameOver()
-    elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
-      local somColisao = audio.loadSound( "sons/slight_distant_explosion.mp3" )
-      audio.play(somColisao)
       event.object1.bodyType = "static"
       explodirNave()
+      somExplosao()
+      gameOver()
+    elseif (event.object1.name == "foguete" and event.object2.name == "chao") then
+      event.object1.bodyType = "static"
+      explodirNave()
+      somExplosao()
       gameOver()
     elseif (event.object1.name == "chao" and event.object2.name == "foguete") then
-      local somColisao = audio.loadSound( "sons/slight_distant_explosion.mp3" )
-      audio.play(somColisao)
-      event.object2.bodyType = "static"
+      event.object1.bodyType = "static"
       explodirNave()
+      somExplosao()
       gameOver()
     end
     if (event.object1.name == "teto" and event.object2.name == "cometa") then
@@ -980,8 +994,8 @@ end
 -- A cada estilingue pegue a velocidade aumentará junto à difuldade
 --------------------------------------------------------------------------------
 function aumentarVelocidade()
-  speedEstrelas = speedEstrelas + 2
-  speed = speed + 3
+  speedEstrelas = speedEstrelas + 3
+  speed = speed + 50
   --distancia = distancia + 2
 end
 --------------------------------------------------------------------------------

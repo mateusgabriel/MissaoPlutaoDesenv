@@ -44,6 +44,7 @@ function scene:create(event)
 
   local somMenu = audio.loadStream( "sons/level4.ogg" )
   audio.play(somMenu, {loops = -1, channel = 1, fadein = 1000})
+  audio.setVolume( 0.50 , { channel=1 })
 
   resultadoFinalTxt = display.newText('' .. resultadoFinal, display.contentCenterX + 230, display.contentCenterY + 79, "Visitor TT1 BRK", 50)
   scene.view:insert(resultadoFinalTxt)
